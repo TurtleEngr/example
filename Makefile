@@ -1,12 +1,10 @@
-# General Makefile for managing example code.
-# This should only be modified on the develop branch.
-# See the template/Makefile for the other branches.
+# Makefile for passwordless-ssh-keys
 
 # --------------------
 # Vars
 
 SHELL = /bin/bash
-mBranch = develop
+mBranch = passwordless-ssh-keys
 
 # --------------------
 # Main targets
