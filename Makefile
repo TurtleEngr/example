@@ -6,6 +6,15 @@
 SHELL = /bin/bash
 mBranch = passwordless-ssh-keys
 
+mBinList = \
+	bin/doc-fmt \
+	bin/shunit2.1 \
+	bin/gpgagent \
+	bin/gpgagent \
+	bin/ssh-askpass \
+	bin/sshagent \
+	bin/sshagent-test
+
 # --------------------
 # Main targets
 
@@ -22,14 +31,7 @@ publish release push :
 
 # --------------------
 
-update-from-bin : \
-	bin/doc-fmt \
-	bin/shunit2.1 \
-	bin/sshagent \
-	bin/gpgagent \
-	bin/sshagent-test \
-	bin/ssh-askpass \
-	bin/gpgagent
+update-from-bin : $(mBinList)
 	cd bin; doc-fmt $$(find * -prune -type f -executable)
 
 # --------------------
