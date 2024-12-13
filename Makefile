@@ -1,12 +1,14 @@
-# General Makefile for managing example code.
-# This should only be modified on the develop branch.
-# See the template/Makefile for the other branches.
+# Makefile for clean-code
 
 # --------------------
 # Vars
 
 SHELL = /bin/bash
-mBranch = develop
+mBranch = clean-code
+
+mBinList = \
+	bin/doc-fmt \
+	bin/shunit2.1
 
 # --------------------
 # Main targets
@@ -22,7 +24,15 @@ publish release push : save
 	git push origin $(mBranch)
 
 # --------------------
+
+update-from-bin : $(mBinList)
+	cd bin; doc-fmt $$(find * -prune -type f -executable)
+
+# --------------------
 # Rules
 
 %.html : %.org
 	org2html.sh $< $@
+
+bin/% : ~/bin/%
+	cp $< $@
