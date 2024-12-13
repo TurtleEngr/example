@@ -1,5 +1,5 @@
 * ARTICLE TITLE - Examples
 - Sample README for branches. Copy this to top README.org on the branch.
-+ Article link:
++ Article link
 
-+ TOC for other articles
++ [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
