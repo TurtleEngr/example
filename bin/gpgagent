@@ -1,0 +1,289 @@
+#!/bin/bash
+
+pExit=0
+
+# Get options
+pAdd=0
+pDebug=0
+pHelp=0
+pKill=0
+pScript=0
+
+if [ $# -eq 0 ]; then
+    pHelp=1
+fi
+
+while getopts :'haksx' tArg; do
+    case $tArg in
+        a) pAdd=1 ;;
+        h) pHelp=1 ;;
+        k)
+            pKill=1
+            pAdd=0
+            pScript=0
+            ;;
+        s)
+            pScript=1
+            pAdd=0
+            ;;
+        x) pDebug=1 ;;
+        ?)
+            echo "Error: Unknown option: -$OPTARG [1]"
+            pExit=1
+            ;;
+        *)
+            echo "Error: Unknown option: $tArg [2]"
+            pExit=1
+            ;;
+    esac
+done
+let OPTIND=OPTIND-1
+shift $OPTIND
+pParm=""
+if [ $# -ne 0 ]; then
+    pParm="$*"
+fi
+
+if [ $pHelp -eq 1 -o $pExit -eq 1 ]; then
+    if [ $pHelp -ne 0 ]; then
+        pod2text $0
+        cat <<'EOF' >/dev/null
+=pod
+
+=head1 NAME
+
+gpgagent - setup the gpg and ssh agent process
+
+=head1 SYNOPSIS
+
+ . gpgagent [-h] [-a] [-s] [-k] [key ...]
+
+=head1 DESCRIPTION
+
+gpgagent is a wrapper for gpg-agent, ssh-add, and gpg.  Notice that
+the script is "sourced" (.) so that the env. var. are defined.
+
+If there are no option flags, any running agents owned by you (or the
+$cgAgentOwner) are killed, and a new agent is started, adding any of
+the keys passed.
+
+For the best use of gpgagent, put your public keys in the
+~/.ssh/authorized_keys file on all the systems that you have login
+access to.
+
+If the directory /home/$cgAgentOwner/.gnupg is group or other read or
+writable, gpgagent will exit with an error
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-h>
+
+This help.
+
+=item B<-a>
+
+Connect to the existing agent, and add the passed keys.
+
+=item B<-s>
+
+Only set env. var. (don't run a new agent).  Fails if there is no
+.gpg-agent-info file.
+
+=item B<-k>
+
+Kill all agents owned by you, and remove the .gpg-agent-info file.
+
+=item B<key...>
+
+A list of key file names and/or gpg keys.  Keys with a '@' in them
+will be treated as gpg keys.  All other keys will be treated as ssh
+private key files.
+
+
+=back
+
+=head1 RETURN VALUE
+
+=head1 ERRORS
+
+=head1 EXAMPLES
+
+In a profile script:
+
+        . gpgagent ~/.ssh/id.home ~/.ssh/id.work
+
+In a script run by the 'root' user:
+
+        export $cgAgentOwner=george
+        . gpgagent -s
+
+You ran gpgagent manually to create an agent, but you forgot to
+"source" the script so that the SSH_* env. are set.  Fix this by just
+running gpgagent with the -s option:
+
+        . gpgagent -s
+
+Add another ssh key to a running agent:
+
+        gpgagent -a ~/.ssh/id_foo_dsa
+
+Add another gpg key to a running agent:
+
+        gpgagent -a joe@yahoo.com
+
+List agent and added keys:
+
+        ssh-add -l
+
+Kill all agents:
+
+        gpgagent -k
+
+=head1 ENVIRONMENT
+
+ $cgAgentOwner - user name.  Set to $LOGNAME if empty.
+
+ $GPG_AGENT_INFO - set by gpgagent
+ $SSH_AUTH_SOCK - set by gpgagent
+ $SSH_AGENT_PID - set by gpgagent
+
+=head1 FILES
+
+ /home/$cgAgentOwner/.gnupg/.gpg-agent-info
+ $HOME/.gnupg/gpg-agent.conf
+
+=head1 SEE ALSO
+
+ gpg-agent, gpg, ssh-add, pinentry-qt
+
+=head1 NOTES
+
+Because this script is usually sourced, exits and functions are not
+used.  So that is why the "if" logic in this script is so messy with
+the pExit flag.
+
+=head1 CAVEATS
+
+=head1 DIAGNOSTICS
+
+=head1 BUGS
+
+=head1 RESTRICTIONS
+
+gpgagent only works well with bash.
+
+=head1 AUTHOR
+
+=head1 HISTORY
+
+(c) Copyright 2009 by TrustedID
+
+$Revision: 1.5 $ GMT
+
+=cut
+EOF
+    fi
+else
+    # ------------------------------------------
+    export cgAgentOwner=${cgAgentOwner:-$LOGNAME}
+    export cgEnvDir=/home/$cgAgentOwner/.gnupg
+    export cgEnvFile=$cgEnvDir/.gpg-agent-info
+    export GPG_TTY=$(tty)
+
+    if [ ! -d $cgEnvDir ]; then
+        echo "Error: $cgEnvDir does not exist [3]"
+        pExit=1
+    fi
+
+    if [ $pExit -eq 0 ]; then
+        tPerm=$('ls' -ld $cgEnvDir/ | awk '{print $1}')
+    fi
+    if [ "$tPerm" != 'drwx------' -a $pExit -eq 0 ]; then
+        echo "Error: $cgEnvDir can not be group or other readable [4]"
+        pExit=1
+    fi
+
+    if [ $pScript -eq 1 -o $pAdd -eq 1 ]; then
+        if [ $pExit -eq 0 ]; then
+            if [ ! -r $cgEnvFile ]; then
+                echo "Error: Can not read file $cgEnvFile [5]"
+                exit
+            fi
+            eval $(cat $cgEnvFile)
+            eval $(cut -d= -f 1 <$cgEnvFile | xargs echo export)
+        fi
+    fi
+    if [ $pScript -eq 1 ]; then
+        ssh-add -l
+        pExit=1
+    fi
+
+    # Kill all agents
+    if [ $pKill -eq 1 -o $pAdd -eq 0 ]; then
+        if [ $pExit -eq 0 ]; then
+            tPID=$(ps -ef | grep gpg-agent | grep -v grep | grep $cgAgentOwner | awk '{print $2}')
+            if [ -n "$tPID" ]; then
+                kill -9 $tPID
+            fi
+            rm -f $cgEnvFile 2>/dev/null
+        fi
+    fi
+    if [ $pKill -ne 0 -a $pExit -eq 0 ]; then
+        echo "Killed all of your ssh-agents"
+        pExit=1
+    fi
+
+    if [ $pAdd -eq 0 -a $pExit -eq 0 ]; then
+        export tYear=31536000
+        export tMonth=2628000
+        export tWeek=604800
+        export tDay=86400
+        export tHour=3600
+        export tTtl=$tWeek
+        export tTtlMax=$tMonth
+
+        gpg-agent --daemon --enable-ssh-support \
+            --default-cache-ttl=$tTtl \
+            --default-cache-ttl-ssh=$tTtl \
+            --max-cache-ttl=$tTtlMax \
+            --max-cache-ttl-ssh=$tTtlMax \
+            --write-env-file=$cgEnvFile
+        if [ ! -r $cgEnvFile ]; then
+            echo "Error: Can not read file $cgEnvFile [6]"
+            pExit=0
+        else
+            chmod go= $cgEnvFile
+            eval $(cat $cgEnvFile)
+            eval $(cut -d= -f 1 <$cgEnvFile | xargs echo export)
+        fi
+    fi
+
+    if [ $pExit -eq 0 ]; then
+        for i in $pParm; do
+            if [ ${i#*@} = $i ]; then
+                if [ ! -r $i ]; then
+                    echo "Error: could not read key: $i [7]"
+                fi
+                echo "Add ssh key: $i (enter password and yes to all prompts)"
+                ssh-add $i
+                ssh $(hostname) ls /tmp
+            else
+                echo "Add gpg key: $i (enter password to all prompts)"
+                rm -f /tmp/foo.tmp /tmp/foo.tmp.asc 2>/dev/null
+                echo test >/tmp/foo.tmp
+                gpg -a -r $i --encrypt /tmp/foo.tmp
+                rm -f /tmp/foo.tmp 2>/dev/null
+                gpg --use-agent /tmp/foo.tmp.asc
+                rm -f /tmp/foo.tmp 2>/dev/null
+                gpg --use-agent /tmp/foo.tmp.asc
+                rm -f /tmp/foo.tmp /tmp/foo.tmp.asc 2>/dev/null
+            fi
+        done
+        ssh-add -l
+    fi
+
+    unset cgEnvDir cgEnvFile gErr i pAdd pDebug pHelp pKill pParm
+    unset pScript tMonth tPerm tYear tPID pExit
+fi

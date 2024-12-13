@@ -1,0 +1,283 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>sshagent</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#OPTIONS">OPTIONS</a></li>
+  <li><a href="#ERRORS">ERRORS</a>
+    <ul>
+      <li><a href="#Env-and-option-Errors">Env and option Errors</a></li>
+      <li><a href="#Directory-Errors">Directory Errors</a></li>
+      <li><a href="#s-Errors">-s Errors</a></li>
+      <li><a href="#Key-add-errors-or-warnings">Key add errors or warnings</a></li>
+    </ul>
+  </li>
+  <li><a href="#EXAMPLES">EXAMPLES</a></li>
+  <li><a href="#ENVIRONMENT">ENVIRONMENT</a></li>
+  <li><a href="#FILES">FILES</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#NOTES">NOTES</a>
+    <ul>
+      <li><a href="#Security">Security</a></li>
+      <li><a href="#Help-Text-Format">Help Text Format</a></li>
+      <li><a href="#Test-Driven-Development">Test Driven Development</a></li>
+    </ul>
+  </li>
+  <li><a href="#CAVEATS">CAVEATS</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#RESTRICTIONS">RESTRICTIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#HISTORY">HISTORY</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>sshagent - setup the ssh agent process</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    . sshagent [-h] [-s] [-k] [-x] [pKey ...]
+
+    cgAgentOwner - user name. Default: $USER
+
+    For online help page, go to:
+    https://github.com/TurtleEngr/my-utility-scripts/blob/develop/doc/sshagent.md</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Using ssh-agent is a lot more secure than using a passwordless ssh key. If you use passwordless keys, you are following a very bad pattern, which could lead to large security issues.</p>
+
+<p>This sshagent script is a wrapper for ssh-agent and ssh-add to make it easier to setup and use a ssh-agent. It only starts an agent process if one isn&#39;t already running, and it saves the PID env. var. values for use by scripts.</p>
+
+<p>See the EXAMPLES section for how to use this script.</p>
+
+<p>If an agent is found, then the env. var. are set, the pKeys are added, then listed. If an agent is not found, all other agents are killed, and a new agent is initialized, the pKeys are added, and the env. var. are set.</p>
+
+<p>If -s is used (no pKeys) and an agent is running, then env. vars. are set to use the agent. If an agent is not running, then the agent related env. vars. are unset. -s is commonly used in cron job scripts.</p>
+
+<p>If -k is used (no pKeys), then all ssh-agent will be killed.</p>
+
+<p>If cgAgentOwner env. is set, then that will be used instead of $USER, to find the sshagent.env file. This is only useful for scripts that are run with the &quot;root&quot; user. This is only useful with the -s option, after agent is started as a regular user.</p>
+
+<p>If root user and cgAgentOwner is not set, cgAgentOwner will be set to SUDO_USER if SUDO_USER is defined.</p>
+
+<p>If any Errors messages are output, that means the script has done nothing. Correct the error and try again.</p>
+
+<h1 id="OPTIONS">OPTIONS</h1>
+
+<dl>
+
+<dt id="h"><b>-h</b></dt>
+<dd>
+
+<p>Output full help.</p>
+
+</dd>
+<dt id="s"><b>-s</b></dt>
+<dd>
+
+<p>Set env. var. to use an already running agent, and list the keys. If an agent is not running an Error message will be output.</p>
+
+</dd>
+<dt id="k"><b>-k</b></dt>
+<dd>
+
+<p>Kill all agents owned by the current cgAgentOwner, i.e. $USER.</p>
+
+</dd>
+<dt id="x"><b>-x</b></dt>
+<dd>
+
+<p>Increment gpDebug level. Default: 0</p>
+
+</dd>
+<dt id="pKey"><b>pKey ...</b></dt>
+<dd>
+
+<p>Start a new ssh-agent if one is not running. Add one or more keys to the agent.</p>
+
+<p>If a pKey is not found, the script will try prepending the key with &quot;$HOME/.ssh/&quot;. If that is not found, the script will stop with an error.</p>
+
+</dd>
+</dl>
+
+<h1 id="ERRORS">ERRORS</h1>
+
+<h2 id="Env-and-option-Errors">Env and option Errors</h2>
+
+<pre><code>    Error: sshagent is not &#39;sourced&#39; [LINENO]
+    Error: No options were found [LINENO]&quot;
+    Error: Unknown option: OPTARG [LINENO]
+    Error: Missing USER env. var. [LINENO]
+    Error: Missing HOME env. var. [LINENO]
+    Error: Missing program: PROG [LINENO]</code></pre>
+
+<h2 id="Directory-Errors">Directory Errors</h2>
+
+<pre><code>    Error: HOME dir is not writable [LINENO]</code></pre>
+
+<p>This could be caused by cgAgentOwner being set to an unknown user.</p>
+
+<pre><code>    Error: $cgEnvDir is not writable or is missing [LINENO]</code></pre>
+
+<p>This could be caused by cgAgentOwner being set to a user that has no ~/.ssh/ dir.</p>
+
+<pre><code>    Error: with chown [LINENO]&quot;
+    Error: with chmod [LINENO]&quot;</code></pre>
+
+<p>The attempt to change the owner and permissions on the cgEnvDir failed. The dir and files should ONLY have &quot;user&quot; read/write permissions.</p>
+
+<pre><code>    Error: Not found: KEY [LINENO]&quot;</code></pre>
+
+<p>A KEY was not found, even after prepending with &quot;$HOME/.ssh/&quot;</p>
+
+<h2 id="s-Errors">-s Errors</h2>
+
+<pre><code>    Error: agent is not running [LINENO]&quot;
+    Error: not found: $cgEnvFile [LINENO]&quot;</code></pre>
+
+<h2 id="Key-add-errors-or-warnings">Key add errors or warnings</h2>
+
+<pre><code>    Error: cgAgentOwner override cannot be used to add keys [LINENO]
+    Warning: KEY has no password!!! [LINENO]&quot;</code></pre>
+
+<h1 id="EXAMPLES">EXAMPLES</h1>
+
+<p>For these examples the private keys are located in ~/.ssh/. For better security put your private keys on a USB drive which would only be mounted when you add a key to your ssh-agent.</p>
+
+<ul>
+
+<li><p>The first time you login to your computer, run sshagent to authenticate your ssh keys for the agent. Or put this in your profile. That way You will only need to do this when the computer started or rebooted.</p>
+
+<pre><code>    if ! pgrep ssh-agent &amp;&gt;/dev/null; then
+        . sshagent ~/.ssh/id.home ~/.ssh/id.work
+    else
+        . sshagent -s
+    fi</code></pre>
+
+</li>
+<li><p>You ran sshagent to create an agent, but you forgot to &quot;source&quot; the script so that the SSH_* env. are not set. Just run &#39;. sshagent -s&#39;</p>
+
+</li>
+<li><p>In a profile script add this line. That way when you start a new terminal it will use any keys from the agent. This can also be put in a script if it needs the keys saved on the agent.</p>
+
+<pre><code>    . sshagent -s</code></pre>
+
+</li>
+<li><p>In a script run by the &#39;root&#39; user:</p>
+
+<pre><code>    export $cgAgentOwner=george
+    . sshagent -s</code></pre>
+
+<p>If you used sudo to change to root user, cgAgentOwner will be set to $SUDO_USER</p>
+
+</li>
+<li><p>Add another key to a running agent:</p>
+
+<pre><code>    . sshagent ~/.ssh/id_foo_rsa</code></pre>
+
+</li>
+<li><p>Kill all your agents. This would be a good practice if you don&#39;t want your keys &quot;active&quot; on the computer.</p>
+
+<pre><code>    . sshagent -k</code></pre>
+
+</li>
+</ul>
+
+<h1 id="ENVIRONMENT">ENVIRONMENT</h1>
+
+<pre><code>    cgAgentOwner - user name. Default: $USER
+    cgEnvFile - sshagent env. file. Default: /home/$USER/.ssh/.sshagent.env
+    gpDebug - set to debug level (use before getops -x option)
+    SSH_AGENT_PID - set by ssh-agent
+    SSH_AUTH_SOCK - set by ssh-agent
+    HOME - set by OS. The usual default: /home/$USER
+    USER - set by OS</code></pre>
+
+<h1 id="FILES">FILES</h1>
+
+<pre><code>    /home/$cgAgentOwner/.ssh/.sshagent.env</code></pre>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<pre><code>    ssh-agent, ssh-add, sshagent-test, ssh-askpass, shunit2.1</code></pre>
+
+<h1 id="NOTES">NOTES</h1>
+
+<h2 id="Security">Security</h2>
+
+<ul>
+
+<li><p><b>DO NOT USE PASSWORDLESS KEYS for ssh or gpg!</b> The ONLY exception might be for a production server that might be rebooted when no one would be around to authenticate the keys. If you do use passwordless keys, then make sure the keys are ONLY used on production, the permissions prevent copying the keys, and the keys are &quot;managed&quot;. I.e. the keys are not in any non-production user&#39;s account, AND they are regularly rotated. Of course, with passwordless keys there is no need for ssh-agent.</p>
+
+</li>
+<li><p>If the account of the root user or the owner of the ssh-agent is &quot;cracked&quot;, then all of the keys on the agent will be compromised.</p>
+
+</li>
+<li><p>Tip: if ssh keys are &quot;shared&quot;, each user should change the password, on their copy of the key, to one that only they know.</p>
+
+</li>
+</ul>
+
+<h2 id="Help-Text-Format">Help Text Format</h2>
+
+<p>You can output this help text in different formats, if you have these other pod programs. For example:</p>
+
+<pre><code>    pod2html --title=&quot;sshagent&quot; sshagent &gt;sshagent.html
+    pod2markdown sshagent &gt;sshagent.md
+    pod2man sshagent &gt;sshagent.man
+    pod2pdf --margins=36 --outlines sshagent &gt;sshagent.pdf</code></pre>
+
+<h2 id="Test-Driven-Development">Test Driven Development</h2>
+
+<p>For TDD you can find the latest versions of sshagent and sshagent-test at: <a href="https://github.com/TurtleEngr/my-utility-scripts/tree/main/bin">github</a></p>
+
+<h1 id="CAVEATS">CAVEATS</h1>
+
+<ul>
+
+<li><p>There could be conflicts with an ssh-agent that started by an X11 session manager. This script is designed to work on headless services or workstations, <i>across sessions.</i> So if an ssh-agent process already exists, before using this script, you&#39;ll need to track down where it is being started, and prevent it from starting. For example, on my Linux laptop I removed &quot;use-ssh-agent&quot; from file /etc/X11/Xsession.options</p>
+
+</li>
+<li><p>The $cgAgentOwner option for using another user&#39;s agent will only work for the root user, because ssh will only work if the ~/.ssh/ directory is only readable by its owner. If non-root users need to share the ssh-agent, then put put the .sshagent.env in a location that only those users can read, using &quot;group&quot; permissions. See the cgEnvFile variable.</p>
+
+</li>
+<li><p>The weird coding style of using functions, gErr, and returns, is done to avoid using &quot;exit,&quot; which would exit the active process (i.e. the terminal or a calling script).</p>
+
+</li>
+</ul>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>When ssh-agent is active it will send each of the keys to a ssh command, until one works. This could cause problems. For example what if you have a rate limit of only 3 login attempts over a one minute period. If the &quot;correct&quot; key is not one of the first 3 on the agent, then ssh will always fail.</p>
+
+<h1 id="RESTRICTIONS">RESTRICTIONS</h1>
+
+<p>sshagent only works well with bash.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>TurtleEngr</p>
+
+<h1 id="HISTORY">HISTORY</h1>
+
+<p>$Revision: 1.91 $</p>
+
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,167 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>gpgagent</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#OPTIONS">OPTIONS</a></li>
+  <li><a href="#RETURN-VALUE">RETURN VALUE</a></li>
+  <li><a href="#ERRORS">ERRORS</a></li>
+  <li><a href="#EXAMPLES">EXAMPLES</a></li>
+  <li><a href="#ENVIRONMENT">ENVIRONMENT</a></li>
+  <li><a href="#FILES">FILES</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#NOTES">NOTES</a></li>
+  <li><a href="#CAVEATS">CAVEATS</a></li>
+  <li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#RESTRICTIONS">RESTRICTIONS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#HISTORY">HISTORY</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>gpgagent - setup the gpg and ssh agent process</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code> . gpgagent [-h] [-a] [-s] [-k] [key ...]</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>gpgagent is a wrapper for gpg-agent, ssh-add, and gpg. Notice that the script is &quot;sourced&quot; (.) so that the env. var. are defined.</p>
+
+<p>If there are no option flags, any running agents owned by you (or the $cgAgentOwner) are killed, and a new agent is started, adding any of the keys passed.</p>
+
+<p>For the best use of gpgagent, put your public keys in the ~/.ssh/authorized_keys file on all the systems that you have login access to.</p>
+
+<p>If the directory /home/$cgAgentOwner/.gnupg is group or other read or writable, gpgagent will exit with an error</p>
+
+<h1 id="OPTIONS">OPTIONS</h1>
+
+<dl>
+
+<dt id="h"><b>-h</b></dt>
+<dd>
+
+<p>This help.</p>
+
+</dd>
+<dt id="a"><b>-a</b></dt>
+<dd>
+
+<p>Connect to the existing agent, and add the passed keys.</p>
+
+</dd>
+<dt id="s"><b>-s</b></dt>
+<dd>
+
+<p>Only set env. var. (don&#39;t run a new agent). Fails if there is no .gpg-agent-info file.</p>
+
+</dd>
+<dt id="k"><b>-k</b></dt>
+<dd>
+
+<p>Kill all agents owned by you, and remove the .gpg-agent-info file.</p>
+
+</dd>
+<dt id="key"><b>key...</b></dt>
+<dd>
+
+<p>A list of key file names and/or gpg keys. Keys with a &#39;@&#39; in them will be treated as gpg keys. All other keys will be treated as ssh private key files.</p>
+
+</dd>
+</dl>
+
+<h1 id="RETURN-VALUE">RETURN VALUE</h1>
+
+<h1 id="ERRORS">ERRORS</h1>
+
+<h1 id="EXAMPLES">EXAMPLES</h1>
+
+<p>In a profile script:</p>
+
+<pre><code>        . gpgagent ~/.ssh/id.home ~/.ssh/id.work</code></pre>
+
+<p>In a script run by the &#39;root&#39; user:</p>
+
+<pre><code>        export $cgAgentOwner=george
+        . gpgagent -s</code></pre>
+
+<p>You ran gpgagent manually to create an agent, but you forgot to &quot;source&quot; the script so that the SSH_* env. are set. Fix this by just running gpgagent with the -s option:</p>
+
+<pre><code>        . gpgagent -s</code></pre>
+
+<p>Add another ssh key to a running agent:</p>
+
+<pre><code>        gpgagent -a ~/.ssh/id_foo_dsa</code></pre>
+
+<p>Add another gpg key to a running agent:</p>
+
+<pre><code>        gpgagent -a joe@yahoo.com</code></pre>
+
+<p>List agent and added keys:</p>
+
+<pre><code>        ssh-add -l</code></pre>
+
+<p>Kill all agents:</p>
+
+<pre><code>        gpgagent -k</code></pre>
+
+<h1 id="ENVIRONMENT">ENVIRONMENT</h1>
+
+<pre><code> $cgAgentOwner - user name.  Set to $LOGNAME if empty.
+
+ $GPG_AGENT_INFO - set by gpgagent
+ $SSH_AUTH_SOCK - set by gpgagent
+ $SSH_AGENT_PID - set by gpgagent</code></pre>
+
+<h1 id="FILES">FILES</h1>
+
+<pre><code> /home/$cgAgentOwner/.gnupg/.gpg-agent-info
+ $HOME/.gnupg/gpg-agent.conf</code></pre>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<pre><code> gpg-agent, gpg, ssh-add, pinentry-qt</code></pre>
+
+<h1 id="NOTES">NOTES</h1>
+
+<p>Because this script is usually sourced, exits and functions are not used. So that is why the &quot;if&quot; logic in this script is so messy with the pExit flag.</p>
+
+<h1 id="CAVEATS">CAVEATS</h1>
+
+<h1 id="DIAGNOSTICS">DIAGNOSTICS</h1>
+
+<h1 id="BUGS">BUGS</h1>
+
+<h1 id="RESTRICTIONS">RESTRICTIONS</h1>
+
+<p>gpgagent only works well with bash.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<h1 id="HISTORY">HISTORY</h1>
+
+<p>(c) Copyright 2009 by TrustedID</p>
+
+<p>$Revision: 1.5 $ GMT</p>
+
+
+</body>
+
+</html>
+
+
