@@ -7,6 +7,10 @@
 SHELL = /bin/bash
 mBranch = BRANCH-NAME
 
+mBinList = \
+	bin/doc-fmt \
+	bin/shunit2.1
+
 # --------------------
 # Main targets
 
@@ -21,7 +25,15 @@ publish release push :
 	git push origin $(mBranch)
 
 # --------------------
+
+update-from-bin : $(mBinList)
+	cd bin; doc-fmt $$(find * -prune -type f -executable)
+
+# --------------------
 # Rules
 
 %.html : %.org
 	org2html.sh $< $@
+
+bin/% : ~/bin/%
+	cp $< $@
