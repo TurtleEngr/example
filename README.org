@@ -5,14 +5,18 @@
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
 ** TOC
-+ gpgagent
-+ sshagent
-+ sshagent-test
-+ ssh-askpass
+*** Manuals
++ [[https://github.com/TurtleEngr/example/tree/passwordless-ssh-keys/bin/doc/sshagent.md][bin/doc/sshagent.md]]
++ [[https://github.com/TurtleEngr/example/tree/passwordless-ssh-keys/bin/doc/sshagent-test.md][bin/doc/sshagent-test.md]]
++ [[https://github.com/TurtleEngr/example/tree/passwordless-ssh-keys/bin/doc/gpgagent.md][bin/doc/gpgagent.md]]
++ [[https://github.com/TurtleEngr/example/tree/passwordless-ssh-keys/bin/doc][bin/doc/]] - all formats
 
-+ doc/
-+ doc-fmt
-+ shunit2.1
+*** Scripts
++ [[https://github.com/TurtleEngr/example/blob/passwordless-ssh-keys/bin/sshagent][bin/sshagent]]
++ [[https://github.com/TurtleEngr/example/blob/passwordless-ssh-keys/bin/sshagent-test][bin/sshagent-test]]
++ [[https://github.com/TurtleEngr/example/blob/passwordless-ssh-keys/bin/askpass][bin/ssh-askpass]] - used by ssh-agent
++ [[https://github.com/TurtleEngr/example/blob/passwordless-ssh-keys/bin/gpgagent][bin/gpgagent]]
++ [[https://github.com/TurtleEngr/example/blob/passwordless-ssh-keys/bin/shunit2.1][bin/shunit2.1]] - needed for sshagent-test
 
 ** Related Links
 + [[https://www.ssh.com/academy/ssh/agent][ssh-agent: How to configure ssh-agent]] - [[https://web.archive.org/web/20240805223541/https://www.ssh.com/academy/ssh/agent][(Archive Link)]]
@@ -20,4 +24,3 @@
 + [[https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html][Invoking GPG-AGENT]] - [[https://web.archive.org/web/20240919184201/https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html][(Archive Link)]]
 + [[https://www.gnupg.org/][The GNU Privacy Guard]]
 + https://github.com/kward/shunit2
-
