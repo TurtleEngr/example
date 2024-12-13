@@ -5,3 +5,19 @@
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
 ** TOC
++ gpgagent
++ sshagent
++ sshagent-test
++ ssh-askpass
+
++ doc/
++ doc-fmt
++ shunit2.1
+
+** Related Links
++ [[https://www.ssh.com/academy/ssh/agent][ssh-agent: How to configure ssh-agent]] - [[https://web.archive.org/web/20240805223541/https://www.ssh.com/academy/ssh/agent][(Archive Link)]]
++ [[https://www.virtono.com/community/tutorial-how-to/restrict-executable-ssh-commands-with-authorized-keys/][Restrict executable SSH commands with authorized keys]] - [[https://web.archive.org/web/20220601123000/https://www.virtono.com/community/tutorial-how-to/restrict-executable-ssh-commands-with-authorized-keys/][(Archive Link)]]
++ [[https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html][Invoking GPG-AGENT]] - [[https://web.archive.org/web/20240919184201/https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html][(Archive Link)]]
++ [[https://www.gnupg.org/][The GNU Privacy Guard]]
++ https://github.com/kward/shunit2
+
