@@ -14,11 +14,11 @@ mBranch = develop
 clean :
 	find . -name '*~' -exec rm {} \;
 
-save ci :
+save ci : clean
 	git pull origin $(mBranch)
 	git ci -am Updated
 
-publish release push :
+publish release push : save
 	git push origin $(mBranch)
 
 # --------------------
