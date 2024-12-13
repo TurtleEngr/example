@@ -20,6 +20,14 @@ save ci :
 publish release push :
 	git push origin $(mBranch)
 
+update-from-bin :
+	cd bin; for f in $$(find * -prune -type f); do \
+		if [[ -f ~/bin/$$f ]]; then \
+			cp ~/bin/$$f .; \
+			doc-fmt $$f; \
+		fi; \
+	done
+
 # --------------------
 # Rules
 
