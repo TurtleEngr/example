@@ -14,7 +14,8 @@ mBinList = \
 # Main targets
 
 clean :
-	find . -name '*~' -exec rm {} \;
+	-find . -name '*~' -exec rm {} \;
+	-find . -name 'pod2htmd.tmp' -exec rm {} \;
 
 save ci : clean
 	git pull origin $(mBranch)
