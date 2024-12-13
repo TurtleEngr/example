@@ -1,0 +1,14 @@
+* example
+- This repository is used for example code that is referenced by
+  various articles I have written.
+
+- Why not use github's gists? The long hash codes in the URL them hard
+  to rember and use.
+
+** Organization
++ develop branch is only used for some mainenance scripts.
++ Branches are used to categorize code that is referenced by articles.
+  Think of branches as separate repos.q
++ The branches are never merged back to develop.
++ develop can be merged to any branch, but not if the branch replaces
+  files that are on develop.
