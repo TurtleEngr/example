@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>gpg-sign.sh</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME-gpg-sign.sh">NAME gpg-sign.sh</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#OPTIONS">OPTIONS</a></li>
+  <li><a href="#EXAMPLES">EXAMPLES</a>
+    <ul>
+      <li><a href="#Separate-signature-file">Separate signature file</a></li>
+      <li><a href="#Append-signature-to-file">Append signature to file</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#HISTORY">HISTORY</a></li>
+</ul>
+
+<hr/>
+
+<h1 id="NAME-gpg-sign.sh">NAME gpg-sign.sh</h1>
+
+<p>Sign or verify a file&#39;s signature with gpg keys.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    gpg-sign.sh -f FILE [-s] [-c] [-k KEY] [-h] [-H pStyle]</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>With the -s or -c option, sign the FILE, with the -k KEY, and output signature or signed file to FILE.sig. The private KEY needs to be in youru gnupg keychain file.</p>
+
+<p>If no -s or -c option, verify FILE, with the signature file FILE.sig. The public KEY needs to be in your gnupg keychain file.</p>
+
+<h1 id="OPTIONS">OPTIONS</h1>
+
+<dl>
+
+<dt id="f-FILE"><b>-f FILE</b></dt>
+<dd>
+
+<p>File to be signed or verified.</p>
+
+<p>If the -c option was used, the FILE can be FILE.sig.</p>
+
+</dd>
+<dt id="s"><b>-s</b></dt>
+<dd>
+
+<p>Sign the FILE with KEY, and output FILE.sig.</p>
+
+<p>-k KEY is required.</p>
+
+</dd>
+<dt id="c"><b>-c</b></dt>
+<dd>
+
+<p>Sign the FILE with KEY, and output FILE.sig which is a copy of the file with the signature wrapped around the file.</p>
+
+<p>-k KEY is required.</p>
+
+</dd>
+<dt id="k-KEY"><b>-k KEY</b></dt>
+<dd>
+
+<p>The private KEY for signing. This is required for the -s or -c options.</p>
+
+<p>The private KEY needs to be in your gnupg keychain file.</p>
+
+</dd>
+<dt id="h"><b>-h</b></dt>
+<dd>
+
+<p>Output this &quot;long&quot; usage help. See &quot;-H long&quot;</p>
+
+</dd>
+<dt id="H-pStyle"><b>-H pStyle</b></dt>
+<dd>
+
+<p>pStyle is used to select the type of help and how it is formatted.</p>
+
+<p>Styles:</p>
+
+<pre><code>    short|usage - Output short usage help as text.
+    long|text   - Output long usage help as text.
+    man         - Output long usage help as a man page.
+    html        - Output long usage help as html.
+    md          - Output long usage help as markdown.</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="EXAMPLES">EXAMPLES</h1>
+
+<h2 id="Separate-signature-file">Separate signature file</h2>
+
+<pre><code>  $ gpg-sign.sh -s -k example@gmail.com -f example.txt
+    gpg --default-key example@gmail.com --detach-sign --armor -o example.txt.sig example.txt
+    gpg: using &quot;example@gmail.com&quot; as default secret key for signing
+    File &#39;example.txt.sig&#39; exists. Overwrite? (y/N) y
+    Signature file: example.txt.sig</code></pre>
+
+<p>Keep the example.txt.sig with the example.txt file. This form will work for binary files.</p>
+
+<pre><code>  $ gpg-sign.sh -f example.txt
+    gpg --verify example.txt.sig example.txt
+    gpg: Signature made Thu 12 Dec 2024 09:14:08 PM PST
+    gpg:                using RSA key 62AAFB8F3F51623373AD4E1F17DF4FFFFF8E92
+    gpg:                issuer &quot;example@gmail.com&quot;
+    gpg: Good signature from &quot;First Last (personal) &lt;example@gmail.com&gt;&quot; [ultimate]</code></pre>
+
+<p>The file matches what was signed.</p>
+
+<pre><code>  $ gpg-sign.sh -f example.txt
+    gpg --verify example.txt.sig example.txt
+    gpg: Signature made Thu 12 Dec 2024 09:24:15 PM PST
+    gpg:                using RSA key 62AAFB8F3F51623373AD4E1F17DF4FFFFF8E92
+    gpg:                issuer &quot;example@gmail.com&quot;
+    gpg: BAD signature from &quot;First Last (personal) &lt;example@gmail.com&gt;&quot; [ultimate]</code></pre>
+
+<p>This is what you&#39;ll see if the file does not match what was signed.</p>
+
+<h2 id="Append-signature-to-file">Append signature to file</h2>
+
+<pre><code>  $ gpg-sign.sh -c -k example@gmail.com -f example.txt
+    gpg --default-key example@gmail.com --clear-sign -o example.txt.sig example.txt
+    gpg: using &quot;example@gmail.com&quot; as default secret key for signing
+    File &#39;example.txt.sig&#39; exists. Overwrite? (y/N) y
+    Signed file: example.txt.sig</code></pre>
+
+<p>The example.txt.sig contains all of example.txt and the signature is added to the end. Text can be added before and after the signed sections of the file.</p>
+
+<p>Text can be put before the line:</p>
+
+<pre><code>    -----BEGIN PGP</code></pre>
+
+<p>And text can be put after the line:</p>
+
+<pre><code>    -----END PGP</code></pre>
+
+<p>The signature is only valid for the text between those lines.</p>
+
+<pre><code>  $ gpg-sign.sh -f example.txt.sig 
+    gpg --decrypt example.txt.sig
+    File &#39;example.txt&#39; exists. Overwrite? (y/N) y
+    gpg: Signature made Thu 12 Dec 2024 09:12:44 PM PST
+    gpg:                using RSA key 62AAFB8F3F51623373AD4E1F17DF4FFFFF8E92
+    gpg:                issuer &quot;example@gmail.com&quot;
+    gpg: Good signature from &quot;First Last (personal) &lt;example@gmail.com&gt;&quot; [ultimate]</code></pre>
+
+<p>The file matches the signature at the end of the file. And example.txt is created without the signature in the file.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>gpg</p>
+
+<h1 id="HISTORY">HISTORY</h1>
+
+<p>GPLv2 (c) Copyright</p>
+
+<p>$Revision: 1.1 $ $Date: 2024/12/13 05:39:04 $ GMT</p>
+
+
+</body>
+
+</html>
+
+

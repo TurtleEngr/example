@@ -1,24 +1,23 @@
-# General Makefile for managing example code.
-# This should only be modified on the develop branch.
-# See the template/Makefile for the other branches.
+# Makefile for photographic-evidence-is-dead
 
 # --------------------
 # Vars
 
 SHELL = /bin/bash
-mBranch = develop
+mBranch = photographic-evidence-is-dead
 
 # --------------------
 # Main targets
 
 clean :
-	find . -name '*~' -exec rm {} \;
+	-find . -name '*~' -exec rm {} \;
+	-find . -name 'pod2htmd.tmp' -exec rm {} \;
 
-save ci : clean
+save ci :
 	git pull origin $(mBranch)
 	git ci -am Updated
 
-publish release push : save
+publish release push :
 	git push origin $(mBranch)
 
 # --------------------
