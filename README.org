@@ -1,4 +1,4 @@
-* Examples for Passwordless ssh keys
+* Passwordless ssh keys - Examples
 ** Articles
 + [[https://slowengineering.wordpress.com/2024/12/12/passwordless-ssh-keys/][Passwordless ssh keys]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-12)
 + [[https://medium.com/slow-engineering/passwordless-ssh-keys-6ddc79bec3f8][Passwordless ssh keys]] - [[https://medium.com/][Medium article]] (2024-09-19)
