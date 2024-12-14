@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id: sshagent-test,v 1.13 2024/11/22 20:28:18 bruce Exp $
 set -u
 
 # Var prefix key
@@ -22,7 +21,7 @@ export gpTest=""
 
 fUsageTest() {
     # Quick help, run this:
-    # SCRIPTNAME -h
+    # gpg-sign-test.sh -h
 
     local pStyle=$1
     local tProg=""
@@ -65,19 +64,20 @@ fUsageTest() {
 
 =for html <hr/>
 
-=head1 NAME sshagent-test
+=head1 NAME gpg-sign-test.sh
 
 Test the sshagent script.
 
 =head1 SYNOPSIS
 
-    sshagent-test -T all
-    sshagent-test -T list
-    sshagent-test [-h] [-H pStyle] [-T pTest]
+    gpg-sign-test.sh -T all
+    gpg-sign-test.sh -T list
+    gpg-sign-test.sh [-h] [-H pStyle] [-T pTest]
 
 =head1 DESCRIPTION
 
-This script is used to test the sshagent script. See the Notes section
+This script is used to test gpg-sign.sh and 
+See the Notes section
 for how to set it up and the dependent scipts.
 
 =head1 OPTIONS
@@ -125,63 +125,57 @@ ssh-agent, ssh, ssh-askpass, shunit2.1, shellcheck
 
 =head1 NOTES
 
+=head2 Dependencies
+
 =over 4
 
-=item *
-
-For more details about shunit2 (or shunit2.1), see
-shunit2/shunit2-manual.html L<Source|https://github.com/kward/shunit2>
-
-shunit2.1 has a minor change to fix up colors when background is not black.
-
-=item *
-
-The latest versions of sshagent, sshagent-test, and shunit2.1 can be
-found at:
+=item The latest versions of gpg-sign.sh, gpg-sign-test.sh, just-words.pl,
+and shunit2.1 can be found at:
 L<github TurtleEngr|https://github.com/TurtleEngr/my-utility-scripts/tree/main/bin>
+or at
+L<github TurtleEngr|https://github.com/TurtleEngr/example/tree/photographic-evidence-is-dead/bin>
 
-=item *
+=item For more details about shunit2 (shunit2.1)
+see shunit2/shunit2-manual.html
+L<Source|https://github.com/kward/shunit2>
 
-sshagent-test will kill all of your running ssh-agent processes before
-and after running.
+shunit2.1 has a minor change to fix up colors when background is not
+black.
 
-=item *
+=back
 
-sshagent-test requires a non X11 /bin/ssh-askpass
-
-Create this substitute:
-
-    cat <<EOF >~/bin/ssh-askpass
-    #!/bin/bash
-    read -t 5 -p "ssh password? "
-    echo $REPLY
-    EOF
-    chmod a+rx,go-w ~/bin/ssh-askpass
-
-You can replace the system's ssh-askpass, or you can change your path
-so it finds ssh-askpass in your bin dir.
+=head2 Test Outline
 
 =over 4
 
-=item 1. Replace the system's ssh-askpass. As root:
+=item If bin/test/ (with the test sample files) is not found
 
-   sudo -s
-   mv -i /usr/bin/ssh-askpass /usr/bin/ssh-askpass.sav
-   cp /home/$SUDO_USER/bin/ssh-askpass /usr/bin
-   chmod a+rx,go-w /usr/bin/ssh-askpass
-   exit
+then bin/test/ will be created by this script. Also a test gpg homedir
+and test key will be created.
 
-=item 2. Change your path so ~/bin is look in first:
-
-   ed ~/.bash_profile
-   PATH=$HOME/bin:$PATH
-
-If you still get the ssh-askass popup, you'll need to use option 1, or
-you can give the test key's password 'foobar' at every prompt.
+To be sure everything is up-to-date with the tests, you can remove all
+of bin/test so it will be rebuilt.
 
 =back
 
-=back
++ one-time test setup
+  + if test key is not found
+    + --import test.pri test.pub
+    + verify import
+  + export cTestOpt="--batch --no-tty --yes --passphrase test --no-permission-warning --homedir $cgCurDir/test"
+
++ bin/
+  + gpg-sign.sh
+  + gpg-sign-test.sh
+  + just-words.pl
++ test/
+  + test.pri
+  + test.pub
+  + test-page.html
+  + test-page.txt
+  + c-result-test-page.txt.sig
+  + s-result-test-page.txt.sig
+
 
 =for comment =head1 CAVEATS
 =for comment =head1 DIAGNOSTICS
@@ -205,24 +199,12 @@ EOF
 fSetLoc() {
     local tLoc
 
-    if [ -f ./sshagent ]; then
-        echo "$PWD/sshagent"
-        return
-    fi
-
-    tLoc=$(which sshagent)
-    if [ -z "$tLoc" ]; then
-        echo "Error: could not find sshagent" 1>&2
-        exit 1
-    fi
-    if [ ! -x $tLoc ]; then
-        echo "Error: could not find sshagent" 1>&2
-        exit 1
-    fi
-
-    echo $tLoc
     return
 } # fSetLoc
+
+fCreate() {
+???
+}
 
 # ========================================
 # Tests
@@ -444,28 +426,28 @@ fRunTests() {
 # ========================================
 # Main
 
-cgName=sshagent-test
-
-# Set current directory location in PWD and cgCurDir, because with cron
-# jobs PWD is not set.
-if [ -z "$PWD" ]; then
-    PWD=$(pwd)
-fi
-cgCurDir=$PWD
-
-# This is the location of sshagent script
-cgScript=$(fSetLoc)
-
-cgTmp=~/tmp
-if [ ! -d $cgTmp ]; then
-    mkdir -p $cgTmp
-fi
-cgTestDir=$cgTmp/ssh
+cgName=gpg-sign-test.sh
 
 if [ $# -eq 0 ]; then
     echo "Error: Missing options. [$LINENO]"
     fUsageTest short
 fi
+
+# Set current directory location
+if [ -z "$PWD" ]; then
+    PWD=$(pwd)
+fi
+cgCurDir=$PWD
+if [[ -x gpg-sign.sh ]]; then
+    echo "Error: You need to be cd'ed bin/ where gpg-sign.sh is located."
+    exit 1
+fi
+
+cgTestDir=~/.cache/gpg-sign-test
+if [ ! -d $cgTmp ]; then
+    mkdir -p $cgTestDir
+fi
+
 while getopts :hH:T: tArg; do
     case $tArg in
         h) fUsageTest long ;;

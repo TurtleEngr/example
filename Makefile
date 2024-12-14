@@ -6,6 +6,15 @@
 SHELL = /bin/bash
 mBranch = photographic-evidence-is-dead
 
+mBinList = \
+	bin/doc-fmt \
+	bin/shunit2.1 \
+	bin/gpg-sign.sh \
+	bin/gpg-sign.sh \
+	bin/just-words.pl
+
+#	bin/gpg-sign-test.sh
+
 # --------------------
 # Main targets
 
@@ -20,16 +29,16 @@ save ci :
 publish release push :
 	git push origin $(mBranch)
 
-update-from-bin :
-	cd bin; for f in $$(find * -prune -type f); do \
-		if [[ -f ~/bin/$$f ]]; then \
-			cp ~/bin/$$f .; \
-			doc-fmt $$f; \
-		fi; \
-	done
+# --------------------
+
+update-from-bin : $(mBinList)
+	cd bin; doc-fmt $$(find * -prune -type f -executable)
 
 # --------------------
 # Rules
 
 %.html : %.org
 	org2html.sh $< $@
+
+bin/% : ~/bin/%
+	cp $< $@
