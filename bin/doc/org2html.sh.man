@@ -155,6 +155,8 @@ Comvert \s-1FILE\s0.org to \s-1FILE\s0.html
 .PP
 Before org2html.sh is run, all files in \f(CW$Tmp\fR are removed, unless
 env. var. gpDebug is set and not 0.
+.PP
+See the \s-1SEE ALSO\s0 section for the required programs.
 .SS "Replacements"
 .IX Subsection "Replacements"
 .Vb 5
@@ -212,6 +214,20 @@ Output file will default to test.html
 .Vb 2
 \&    Tmp \- if not set, set it to: /tmp/$USER/org2html.sh"}
 \&    gpDebug \- if set not equal to 0, all files in $Tmp will be removed
+.Ve
+.SH "SEE ALSO"
+.IX Header "SEE ALSO"
+.Vb 10
+\&    pandoc
+\&    perl
+\&    pod2html \- perl pkg
+\&    pod2man \- perl pkg
+\&    pod2markdown \- libpod\-markdown\-perl pkg
+\&    pod2pdf
+\&    pod2text \- perl pkg
+\&    pod2usage \- perl pkg
+\&    sed
+\&    tidy
 .Ve
 .SH "HISTORY"
 .IX Header "HISTORY"

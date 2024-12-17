@@ -20,6 +20,8 @@ FILE.org will be converted to FILE.html. It has some fixes to the
 Before org2html.sh is run, all files in $Tmp are removed, unless
 env. var. gpDebug is set and not 0.
 
+See the SEE ALSO section for the required programs.
+
 ## Replacements
 
     '+ ' - will be changed to <li>
@@ -71,6 +73,19 @@ Output file will default to test.html
 
     Tmp - if not set, set it to: /tmp/$USER/org2html.sh"}
     gpDebug - if set not equal to 0, all files in $Tmp will be removed
+
+# SEE ALSO
+
+    pandoc
+    perl
+    pod2html - perl pkg
+    pod2man - perl pkg
+    pod2markdown - libpod-markdown-perl pkg
+    pod2pdf
+    pod2text - perl pkg
+    pod2usage - perl pkg
+    sed
+    tidy
 
 # HISTORY
 

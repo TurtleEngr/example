@@ -11,7 +11,8 @@ mBinList = \
 	bin/shunit2.1 \
 	bin/gpg-sign.sh \
 	bin/gpg-sign.sh \
-	bin/just-words.pl
+	bin/just-words.pl \
+	bin/org2html.sh
 
 #	bin/gpg-sign-test.sh
 

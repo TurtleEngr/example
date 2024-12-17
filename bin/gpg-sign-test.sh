@@ -10,7 +10,6 @@ export cgTestDir=~/.cache/gpg-sign-test
 export cgGpgOpt=""
 export cgTestOpt="--batch --no-tty --yes --no-permission-warning --homedir $cgTestDir/gnupg"
 export cgTestPass="--pinentry-mode loopback --passphrase test"
-
 export cgScript=""
 export gErr=0
 export gpDebug=0

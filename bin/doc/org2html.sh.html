@@ -21,6 +21,7 @@
   </li>
   <li><a href="#OPTIONS">OPTIONS</a></li>
   <li><a href="#ENVIRONMENT">ENVIRONMENT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
   <li><a href="#HISTORY">HISTORY</a></li>
 </ul>
 
@@ -41,6 +42,8 @@
 <p>FILE.org will be converted to FILE.html. It has some fixes to the &quot;pandoc&quot; conversion.</p>
 
 <p>Before org2html.sh is run, all files in $Tmp are removed, unless env. var. gpDebug is set and not 0.</p>
+
+<p>See the SEE ALSO section for the required programs.</p>
 
 <h2 id="Replacements">Replacements</h2>
 
@@ -104,6 +107,19 @@
 
 <pre><code>    Tmp - if not set, set it to: /tmp/$USER/org2html.sh&quot;}
     gpDebug - if set not equal to 0, all files in $Tmp will be removed</code></pre>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<pre><code>    pandoc
+    perl
+    pod2html - perl pkg
+    pod2man - perl pkg
+    pod2markdown - libpod-markdown-perl pkg
+    pod2pdf
+    pod2text - perl pkg
+    pod2usage - perl pkg
+    sed
+    tidy</code></pre>
 
 <h1 id="HISTORY">HISTORY</h1>
 
