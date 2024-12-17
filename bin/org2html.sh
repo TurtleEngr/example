@@ -5,6 +5,8 @@ export cName=org2html.sh
 export gpDebug=${gpDebug:-0}
 export Tmp=${Tmp:-"/tmp/$USER/$cName"}
 export cBin
+export gpFileIn=""
+export gpFileOut=""
 export cTidyHtml="tidy -q -i -w 78 -asxhtml --break-before-br yes --indent-attributes yes --indent-spaces 2 --tidy-mark no --vertical-space no"
 
 # ========================================
@@ -237,6 +239,10 @@ done
 if [[ ! -r $gpFileIn ]]; then
     echo "Error: cannot read file: $gpFileIn"
     exit 1
+fi
+
+if [[ -z "$gpFileOut" ]]; then
+    gpFileOut=${gpFileIn%.*}.html
 fi
 
 # -------------------

@@ -79,7 +79,7 @@ $content =~ s/<a\s+[^>]*href\s*=\s*["']([^"'>]+)["'][^>]*>([^<]*)<\/a>/$1 $2/ig;
 $content =~ s/<[^>]+>//g;
 
 # Remove all text before "-+BEGIN TEXT--+".
-$content =~ s/.*-+BEGIN TEXT-+//;
+$content =~ s/.*?-+BEGIN TEXT-+//;
 
 # Remove all text after "--+END TEXT--+".
 $content =~ s/-+END TEXT-+.*//;

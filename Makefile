@@ -1,4 +1,6 @@
 # Makefile for photographic-evidence-is-dead code and sample files
+# This Makefile is for managment of the repository.
+# Users should cd to sample/ and use that Makefile to run things.
 
 # --------------------
 # Vars
@@ -17,7 +19,7 @@ mBinList = \
 #	bin/gpg-sign-test.sh
 
 # --------------------
-# Main targets
+# Main
 
 clean :
 	-find . -name '*~' -exec rm {} \;

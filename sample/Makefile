@@ -23,7 +23,7 @@ mReqProg = \
 	tidy
 
 # --------------------
-build : clean $(mTestDir) add-keys sign-clear sign-detached unit-test
+build : clean $(mTestDir) import-keys sign-clear sign-detached unit-test
 
 requirements :
 	@for i in $(mReqProg); do \
