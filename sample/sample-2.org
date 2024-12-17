@@ -8,13 +8,13 @@
 <body>
 #+END_EXPORT
 * Gettysburg Address
-- _____BEGIN TEXT_____
+- =-----BEGIN TEXT----=
 - Four score and seven years ago our fathers brought forth on this
   continent, a new nation, conceived in Liberty, and dedicated to the
   proposition that all men are created equal.
 
 - Source: [[https://en.wikipedia.org/wiki/Gettysburg_Address][Gettysburg Address]]
-- _____END TEXT_____
+- =-----END TEXT-----=
 #+BEGIN_EXPORT html
 </body>
 </html>

@@ -260,7 +260,7 @@ while getopts :sck:f:hH: tArg; do
         :) echo "Error: Value required for option: -$OPTARG [$LINENO]"
            fUsage usage
         ;;
-        \?) echo "Error: Unknown option: $OPTARG [$LINENO]"
+        \?) echo "Error: Unknown option: -$OPTARG [$LINENO]"
             fUsage usage
         ;;
     esac
@@ -293,8 +293,8 @@ if [[ $gpSign -ne 0 ]]; then
         echo "Error: Cannot write to current directory [$LINENO]"
         fUsage usage
     fi
-    if ! gpg --list-secret-key $gpKey &>/dev/null; then
-        echo "Error: $gpKey private key was not found. [$LINENO]"
+    if ! gpg $cgGpgOpt --list-secret-key $gpKey &>/dev/null; then
+        echo "Error: $gpKey private key was not found, or passphrase was bad. [$LINENO]"
         exit 1
     fi
 fi
@@ -316,22 +316,22 @@ fi
 # Functional section
 
 if [[ $gpSign -eq 1 ]]; then
-    echo "gpg --default-key $gpKey --detach-sign --armor -o $tSig $cgGpgOpt $gpFile"
-    gpg --default-key $gpKey --detach-sign --armor -o $tSig $cgGpgOpt $gpFile
+    echo "gpg $cgGpgOpt --default-key $gpKey --detach-sign --armor -o $tSig $gpFile"
+    gpg $cgGpgOpt --default-key $gpKey --detach-sign --armor -o $tSig $gpFile
     echo "Signature file: $tSig"
     exit
 fi
 
 if [[ $gpSign -eq 2 ]]; then
-    echo "gpg --default-key $gpKey --clear-sign -o $tSig $cgGpgOpt $gpFile"
-    gpg --default-key $gpKey --clear-sign -o $tSig $cgGpgOpt $gpFile
+    echo "gpg $cgGpgOpt --default-key $gpKey --clear-sign -o $tSig $gpFile"
+    gpg $cgGpgOpt --default-key $gpKey --clear-sign -o $tSig $gpFile
     echo "Signed file: $tSig"
     exit
 fi
 
 if [[ $tVerify -eq 1 ]]; then
-    echo "gpg --verify $tSig $cgGpgOpt $gpFile"
-    if ! gpg --verify $tSig $cgGpgOpt $gpFile; then
+    echo "gpg $cgGpgOpt --verify $tSig $gpFile"
+    if ! gpg $cgGpgOpt --verify $tSig $gpFile; then
         echo "Do you have the public key for the signing user? [$LINENO]"
     fi
     exit

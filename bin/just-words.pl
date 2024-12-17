@@ -1,10 +1,75 @@
 #!/usr/bin/perl
-# Remove all tags and duplicate white space, but leave href links.
-# Text before "--BEGIN TEXT--" and after "--END TEXT--" will removed.
-# Now only the text content remains.
 
-# Usage:
-#     just-words.pl <FILE.html >FILE.txt
+=pod
+
+Remove all tags and duplicate white space, but leave href links.
+
+Text before "--BEGIN TEXT--" and after "--END TEXT--" will removed.
+
+Now only the text content remains.
+
+Usage:
+     just-words.pl <FILE.html >FILE.txt
+
+=pod
+
+=head1 NAME
+
+just-words.pl - Remove all tags and duplicate white space
+
+=head1 SYNOPSIS
+
+    just-words.pl <FILE.html >FILE.txt
+
+=head1 DESCRIPTION
+
+Remove all tags and duplicate white space, but leave href links.
+
+Text before '--BEGIN TEXT--' will be ignored.
+
+Text after '--END TEXT--' will be ignored.
+
+=for comment =head1 OPTIONS
+=for comment =head1 RETURN VALUE
+=for comment =head1 ERRORS
+
+=head1 EXAMPLES
+
+input.html file
+
+<html>
+<head><title>Test</title></head>
+<body>
+<h1>Test</h1>
+<p>Not signed part.</p>
+<p>-----BEGIN TEXT-----</p>
+Text body line 1.
+Line 2
+End.
+<p>-----END TEXT-----</p>
+<p>Not signed part.</p>
+</body>
+</html>
+ 
+Create output.txt file from input.html file
+
+    just-words.pl <input.html >output.txt
+
+output.txt file
+
+
+=for comment =head1 ENVIRONMENT
+=for comment =head1 FILES
+=for comment =head1 SEE ALSO
+=for comment =head1 NOTES
+=for comment =head1 CAVEATS
+=for comment =head1 DIAGNOSTICS
+=for comment =head1 BUGS
+=for comment =head1 RESTRICTIONS
+=for comment =head1 AUTHOR
+=for comment =head1 HISTORY
+
+=cut
 
 use strict;
 use warnings;
@@ -25,10 +90,10 @@ $content =~ s/<a\s+[^>]*href\s*=\s*["']([^"'>]+)["'][^>]*>([^<]*)<\/a>/$1 $2/ig;
 $content =~ s/<[^>]+>//g;
 
 # Remove all text before "-+BEGIN TEXT--+".
-$content =~ s/.*_+BEGIN TEXT_+//;
+$content =~ s/.*-+BEGIN TEXT-+//;
 
 # Remove all text after "--+END TEXT--+".
-$content =~ s/_+END TEXT_+.*//;
+$content =~ s/-+END TEXT-+.*//;
 
 # Replace multiple whitespace (including newlines) with a single space
 $content =~ s/\s+/ /g;

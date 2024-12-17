@@ -3,12 +3,15 @@ set -u
 
 # --------------------
 # Globals
-export cgCurDir
-export cgGpgOpt
 export cgName=gpg-sign-test.sh
+export cgCurDir=$PWD
+
 export cgTestDir=~/.cache/gpg-sign-test
-export cgScript
-export cgTestPass
+export cgGpgOpt=""
+export cgTestOpt="--batch --no-tty --yes --no-permission-warning --homedir $cgTestDir/gnupg"
+export cgTestPass="--pinentry-mode loopback --passphrase test"
+
+export cgScript=""
 export gErr=0
 export gpDebug=0
 export gpTest=""
@@ -222,19 +225,38 @@ fCreateTestPage() {
 </head>
 <body>
   <h1 id="gettysburg-address">Gettysburg Address</h1>
-  <p><span class="underline">___<sub>BEGIN</sub> TEXT____</span></p>
+  <p><code>-----BEGIN TEXT----</code></p>
   <p>Four score and seven years ago our fathers brought forth on this
   continent, a new nation, conceived in Liberty, and dedicated to the
   proposition that all men are created equal.</p>
   <p>Source: <a href=
   "https://en.wikipedia.org/wiki/Gettysburg_Address">Gettysburg
   Address</a></p>
-  <p><span class="underline">___<sub>END</sub> TEXT____</span></p>
+  <p><code>-----END TEXT-----</code></p>
 </body>
 </html>
 EOF
-    ./justwords.pl <$cgTestDir/test-page.html >$cgTestDir/test-page.txt
-}
+    $cgCurDir/just-words.pl <$cgTestDir/test-page.html >$cgTestDir/test-page.txt
+
+    cat <<EOF >$cgTestDir/test-simple.html
+<html>
+<head>
+<title>Test</title>
+</head>
+<body>
+<h1>Test</h1>
+<p>Not signed part.</p>
+<p>-----BEGIN TEXT-----</p>
+Text body line 1.
+Line 2
+End.
+<p>-----END TEXT-----</p>
+<p>Not signed part.</p>
+</body>
+</html>
+EOF
+    
+} # fCreateTestPage
 
 # --------------------
 fCreateKey() {
@@ -327,7 +349,7 @@ t/PfoEtiNwVk1qOr1Ea8/S0Bj72PELMCQQ==
 EOF
 
     # ../sample/test.pub
-    cat <<EOF >$cgTestDir/gnupg/test.pri
+    cat <<EOF >$cgTestDir/gnupg/test.pub
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQGNBGddqAkBDACeGuc1/Jo8tzcuOzeJivMivVbe94WRDljorPRdfXOv/Boxe+Sx
@@ -370,16 +392,17 @@ j72PELMCQQ==
 =dQKf
 -----END PGP PUBLIC KEY BLOCK-----
 EOF
-    gpg $cgGpgOpt $cgTestPass --import $cgTestDir/gnupg/test.pri $cgTestDir/gnupg/test.pub
-    if ! gpg --list-key test@example.com &>/dev/null; then
+    echo "gpg $cgTestOpt $cgTestPass --import $cgTestDir/gnupg/test.pri $cgTestDir/gnupg/test.pub" >$cgTestDir/fCreateKey.output
+    gpg $cgTestOpt $cgTestPass --import $cgTestDir/gnupg/test.pri $cgTestDir/gnupg/test.pub >>$cgTestDir/fCreateKey.output 2>&1
+    if ! gpg $cgTestOpt --list-key test@example.com &>/dev/null; then
         echo "Error: test.pub key could not be defined. [$LINENO]"
         exit 1
     fi
-    if ! gpg --list-secret-key test@example.com &>/dev/null; then
+    if ! gpg $cgTestOpt --list-secret-key test@example.com &>/dev/null; then
         echo "Error: test.pri key could not be defined. [$LINENO]"
         exit 1
     fi
-}
+} # fCreateKey
 
 # ========================================
 # Tests
@@ -389,8 +412,9 @@ oneTimeSetUp() {
     # Unset gpTest to prevent infinite loop
     gpTest=''
 
-    cgTestPass="--passphrase test --pinentry-mode loopback"
-    cgGpgOpt="--batch --no-tty --yes --no-permission-warning --homedir $cgTestDir/gnupg"
+    if [[ -d $cgTestDir/gnupg ]]; then
+        return 0
+    fi
     
     mkdir -p $cgTestDir/gnupg &>/dev/null
     chmod -R go= $cgTestDir
@@ -404,35 +428,49 @@ oneTimeSetUp() {
 
 # --------------------------------
 oneTimeTearDown() {
-    rm -rf $cgTestDir
+    if [[ ${__shunit_assertsFailed} -eq 0 ]]; then
+        rm -rf $cgTestDir
+    fi
+    
     return 0
 } # oneTearDown
 
 # --------------------------------
 setUp() {
-    pkill -u $USER ssh-agent &>/dev/null
-    gpDebug=0
+    cd $cgCurDir
+    cgGpgOpt="$cgTestOpt"
 
     return 0
 } # setUp
 
 # --------------------------------
 tearDown() {
-    pkill -u $USER ssh-agent &>/dev/null
-    rm ~/tmp/result.tmp &>/dev/null
-
+    cd $cgCurDir
+    rm $cgTestDir/test-page.txt.sig 2>/dev/null
     return 0
 } # tearDown
 
 # ========================================
 
 testSetup() {
-    assertTrue "[$LINENO]" "[ -f $cgEnvFile ]"
-    assertTrue "[$LINENO]" "[ -f $cgTestDir/id.test1 ]"
-    assertTrue "[$LINENO]" "[ -f $cgTestDir/id.test1.pub ]"
-    assertTrue "[$LINENO]" "[ -f $cgTestDir/id.test2 ]"
-    assertTrue "[$LINENO]" "[ -f $cgTestDir/id.test2.pub ]"
-    assertFalse "[$LINENO]" "pgrep -u $USER ssh-agent"
+    assertTrue "[$LINENO] gpg-sign.sh" "[ -x gpg-sign.sh ]"
+    assertTrue "[$LINENO] just-words.pl" "[ -x just-words.pl ]"
+    assertTrue "[$LINENO] org2html.shh" "[ -x org2html.sh ]"
+    assertTrue "[$LINENO] test-page.html" "[ -r $cgTestDir/test-page.html ]"
+    assertTrue "[$LINENO] BEGIN" "grep -q -- '--BEGIN TEXT--' $cgTestDir/test-page.html ]"
+    assertTrue "[$LINENO] test-page.txt" "[ -r $cgTestDir/test-page.txt ]"
+    assertFalse "[$LINENO]" "grep -q -- '--BEGIN TEXT--' $cgTestDir/test-page.txt ]"
+
+    assertTrue "[$LINENO] test-simple.html" "[ -r $cgTestDir/test-simple.html ]"
+    
+    assertTrue "[$LINENO] gnupg/" "[ -d $cgTestDir/gnupg ]"
+    assertTrue "[$LINENO]" "[ -r $cgTestDir/gnupg/test.pri ]"
+    assertTrue "[$LINENO]" "[ -r $cgTestDir/gnupg/test.pub ]"
+    assertTrue "[$LINENO]" "[ -w $cgTestDir/gnupg/pubring.kbx ]"
+    assertTrue "[$LINENO]" "[ -w $cgTestDir/gnupg/trustdb.gpg ]"
+    
+    assertTrue "[$LINENO] pub key" "gpg $cgGpgOpt --list-key test@example.com &>/dev/null"
+    assertTrue "[$LINENO] pri key" "gpg $cgGpgOpt --list-secret-key test@example.com &>/dev/null"
 
     return 0
 } # testSetup
@@ -444,6 +482,9 @@ testUsageOK() {
     tResult=$($cgScript -h 2>&1)
     assertContains "[$LINENO] $tResult" "$tResult" "DESCRIPTION"
 
+    tResult=$($cgScript -H html 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "<title>gpg-sign.sh</title>"
+
     return 0
 } # testUsageOK
 
@@ -452,128 +493,115 @@ testUsageError() {
     local tResult
 
     tResult=$($cgScript 2>&1)
-    assertContains "[$LINENO] $tResult" "$tResult" "Error: No options were found"
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: -f FILE option is required"
     assertContains "[$LINENO] $tResult" "$tResult" "Usage:"
-
-    gpDebug=1
-    tResult=$(. $cgScript 2>&1)
-    assertContains "[$LINENO] $tResult" "$tResult" "Error: No options were found"
-    assertContains "[$LINENO] $tResult" "$tResult" "Usage:"
-    gpDebug=0
 
     tResult=$($cgScript -U 2>&1)
     assertContains "[$LINENO] $tResult" "$tResult" "Error: Unknown option: -U"
     assertContains "[$LINENO] $tResult" "$tResult" "Usage:"
 
-    gpDebug=1
-    tResult=$(. $cgScript -U 2>&1)
-    assertContains "[$LINENO] $tResult" "$tResult" "Error: Unknown option: -U"
-    assertContains "[$LINENO] $tResult" "$tResult" "Usage:"
-    gpDebug=0
-
-    tResult=$($cgScript -s 2>&1)
-    assertContains "[$LINENO] $tResult" "$tResult" "Error: sshagent is not 'sourced'"
-    assertContains "[$LINENO] $tResult" "$tResult" "Usage:"
+    tResult=$($cgScript -H 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: Value required for option: -H"
 
     return 0
 } # testUsageError
 
-testCreateOK() {
+# --------------------------------
+testJustWordsOK() {
     local tResult
 
-    assertTrue "[$LINENO]" "[ -f $cgTestDir/id.test1 ]"
+    tResult=$($cgCurDir/just-words.pl <$cgTestDir/test-simple.html)
+    assertContains "[$LINENO] $tResult" "$tResult" "Text body line 1. Line 2 End."
+    assertNotContains "[$LINENO] $tResult" "$tResult" "BEGIN TEXT"
+    assertNotContains "[$LINENO] $tResult" "$tResult" "END TEXT"
+    assertNotContains "[$LINENO] $tResult" "$tResult" "Not signed part"
+    
+    return 0
+} # testJustWordsOK
 
-    . $cgScript "$cgTestDir/id.test1" >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertTrue "[$LINENO]" "pgrep -u $USER ssh-agent"
-    assertNotContains "[$LINENO] $tResult" "$tResult" "Error"
-    assertContains "[$LINENO] $tResult" "$tResult" "id.test1 (RSA)"
-    assertContains "[$LINENO] $tResult" "$tResult" "3072 SHA256"
-    assertTrue "[$LINENO]" "[ -f $cgEnvFile ]"
-    assertTrue "[$LINENO]" "grep -q '^SSH_AGENT_PID' $cgEnvFile"
-    assertTrue "[$LINENO]" "grep -q '^SSH_AUTH_SOCK' $cgEnvFile"
-    assertTrue "[$LINENO]" "[ -n \"$SSH_AGENT_PID\" ]"
-    assertTrue "[$LINENO]" "[ -n \"$SSH_AUTH_SOCK\" ]"
+# --------------------------------
+testSignOK() {
+    local tResult
+    
+    cgGpgOpt="$cgTestOpt $cgTestPass"
+    cd $cgTestDir
 
-    . $cgScript -s >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertContains "[$LINENO] $tResult" "$tResult" "id.test1 (RSA)"
-    assertContains "[$LINENO] $tResult" "$tResult" "3072 SHA256"
+    tResult=$($cgScript -c -k test@example.com -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Signed file: test-page.txt.sig"
+    assertContains "[$LINENO] $tResult" "$tResult" "gpg: using \"test@example.com\" as default secret key for signing"
+    assertTrue "[$LINENO]" "[ -f $cgTestDir/test-page.txt.sig ]"
+    assertTrue "[$LINENO]" "grep -q 'BEGIN PGP SIGNED MESSAGE' $cgTestDir/test-page.txt.sig"
+    assertTrue "[$LINENO]" "grep -q 'Four score and seven years ago' $cgTestDir/test-page.txt.sig"
+    assertTrue "[$LINENO]" "grep -q 'BEGIN PGP SIGNATURE' $cgTestDir/test-page.txt.sig"
+    assertTrue "[$LINENO]" "grep -q 'END PGP SIGNATURE' $cgTestDir/test-page.txt.sig"
+    assertTrue "[$LINENO]" "grep -q 'wiki/Gettysburg_Address' $cgTestDir/test-page.txt.sig"
 
     return 0
-} # testCreateOK
+} # testSignOK
 
-testCreateError() {
+# --------------------------------
+testSignError() {
     local tResult
 
-    . $cgScript "$cgTestDir/id.xxx" >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertFalse "[$LINENO]" "pgrep -u $USER ssh-agent"
-    assertContains "[$LINENO] $tResult" "$tResult" "Error: Not found: "
+    cgGpgOpt="$cgTestOpt $cgTestPass"
+    cd $cgTestDir
+
+    tResult=$($cgScript -c -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: -k KEY option is required"
+
+    tResult=$($cgScript -c -k test-bad@example.com -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: test-bad@example.com private key was not found"
+
+    tResult=$($cgScript -c -k test-bad@example.com -f test-page-bad.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: Cannot find or read: test-page-bad.txt"
+
+    cgGpgOpt="$cgTestOpt ${cgTestPass}BAD"
+    tResult=$($cgScript -c -k test-bad@example.com -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: test-bad@example.com private key was not found"
 
     return 0
-} # testCreateError
+} # testSignError
 
-testAddOK() {
+# --------------------------------
+testSignDetachedOK() {
     local tResult
 
-    . $cgScript "$cgTestDir/id.test1" >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertTrue "[$LINENO]" "pgrep -u $USER ssh-agent"
+    cgGpgOpt="$cgTestOpt $cgTestPass"
+    cd $cgTestDir
 
-    . $cgScript "$cgTestDir/id.test2" >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertContains "[$LINENO] $tResult" "$tResult" "Identity added: "
-    assertContains "[$LINENO] $tResult" "$tResult" "id.test2 (RSA)"
-    assertContains "[$LINENO] $tResult" "$tResult" "id.test1 (RSA)"
-    assertNotContains "[$LINENO] $tResult" "$tResult" "Error"
+    tResult=$($cgScript -s -k test@example.com -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Signature file: test-page.txt.sig"
+    assertContains "[$LINENO] $tResult" "$tResult" "gpg: using \"test@example.com\" as default secret key for signing"
+
+    assertTrue "[$LINENO]" "[ -f $cgTestDir/test-page.txt.sig ]"
+    assertTrue "[$LINENO]" "grep -q 'BEGIN PGP SIGNATURE' $cgTestDir/test-page.txt.sig"
+    assertTrue "[$LINENO]" "grep -q 'END PGP SIGNATURE' $cgTestDir/test-page.txt.sig"
 
     return 0
-} # testAdd()
+} # testSignDetachedOK
 
-testCreateWarn() {
+# --------------------------------
+testSignDetachedError() {
     local tResult
 
-    ssh-keygen -t rsa -f $cgTestDir/id.test3 -N "" -C "id.test3" &>/dev/null
-    assertTrue "[$LINENO]" "[ -f $cgTestDir/id.test3 ]"
+    cgGpgOpt="$cgTestOpt ${cgTestPass}"
+    cd $cgTestDir
 
-    . $cgScript "$cgTestDir/id.test3" >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertTrue "[$LINENO]" "pgrep -u $USER ssh-agent"
-    assertNotContains "[$LINENO] $tResult" "$tResult" "Error: Not found: "
-    assertContains "[$LINENO] $tResult" "$tResult" " has no password"
-    assertContains "[$LINENO] $tResult" "$tResult" "id.test3 (RSA)"
+    tResult=$($cgScript -s -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: -k KEY option is required"
 
-    return 0
-} # testCreateError2
+    tResult=$($cgScript -s -k test-bad@example.com -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: test-bad@example.com private key was not found"
 
-testError() {
-    local tResult
+    tResult=$($cgScript -s -k test-bad@example.com -f test-page-bad.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: Cannot find or read: test-page-bad.txt"
 
-    assertFalse "[$LINENO]" "pgrep -u $USER ssh-agent"
-
-    . $cgScript -s >~/tmp/result.tmp 2>&1
-    tResult=$(cat ~/tmp/result.tmp)
-    assertContains "[$LINENO] $tResult" "$tResult" "Error: agent is not running"
-    assertFalse "[$LINENO]" "pgrep -u $USER ssh-agent"
+    cgGpgOpt="$cgTestOpt ${cgTestPass}BAD"
+    tResult=$($cgScript -s -k test-bad@example.com -f test-page.txt 2>&1)
+    assertContains "[$LINENO] $tResult" "$tResult" "Error: test-bad@example.com private key was not found"
 
     return 0
-}
-
-testKill() {
-    local tResult
-
-    . $cgScript "$cgTestDir/id.test1" >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertTrue "[$LINENO]" "pgrep -u $USER ssh-agent"
-
-    . $cgScript -k >~/tmp/result.tmp 2>&1 < <(echo foobar)
-    tResult=$(cat ~/tmp/result.tmp)
-    assertFalse "[$LINENO]" "pgrep -u $USER ssh-agent"
-    assertContains "[$LINENO] $tResult" "$tResult" "Notice: Killing all of your ssh-agents"
-
-    return 0
-} # testKill
+} # testSignDetachedError
 
 # -------------------
 # This should be the last defined function
@@ -621,7 +649,7 @@ while getopts :hH:T: tArg; do
 done
 shift $((OPTIND - 1))
 if [ $# -ne 0 ]; then
-    echo "Unknown option: $OPTARG [$LINENO]"
+    echo "Unknown option: $* [$LINENO]"
     fUsageTest short
 fi
 
@@ -632,7 +660,7 @@ fi
 cgCurDir=$PWD
 
 cgScript=$PWD/gpg-sign.sh
-if [[ -x ${cgScript%/*} ]]; then
+if [[ ! -x ${cgScript%/*} ]]; then
     echo "Error: You need to be cd'ed to bin/ where $cgScript is located. [$LINENO]"
     fUsageTest short
 fi
