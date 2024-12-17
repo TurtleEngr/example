@@ -22,11 +22,11 @@ clean :
 	-find . -name '*~' -exec rm {} \;
 	-find . -name 'pod2htmd.tmp' -exec rm {} \;
 
-save ci :
+save ci : clean
 	git pull origin $(mBranch)
 	git ci -am Updated
 
-publish release push :
+publish release push : clean ci
 	git push origin $(mBranch)
 
 # --------------------
@@ -41,4 +41,8 @@ update-from-bin : $(mBinList)
 	org2html.sh $< $@
 
 bin/% : ~/bin/%
-	cp $< $@
+	if diff -q $< $@; then \
+		touch $@; \
+	else \
+		cp $< $@; \
+	fi

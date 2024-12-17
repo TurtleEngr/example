@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>just-words.pl</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#EXAMPLES">EXAMPLES</a></li>
+</ul>
+
+<p>Remove all tags and duplicate white space, but leave href links.</p>
+
+<p>Text before &quot;--BEGIN TEXT--&quot; and after &quot;--END TEXT--&quot; will removed.</p>
+
+<p>Now only the text content remains.</p>
+
+<p>Usage: just-words.pl &lt;FILE.html &gt;FILE.txt</p>
+
+<h1 id="NAME">NAME</h1>
+
+<p>just-words.pl - Remove all tags and duplicate white space</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    just-words.pl &lt;FILE.html &gt;FILE.txt</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Remove all tags and duplicate white space, but leave href links.</p>
+
+<p>Text before &#39;--BEGIN TEXT--&#39; will be ignored.</p>
+
+<p>Text after &#39;--END TEXT--&#39; will be ignored.</p>
+
+<h1 id="EXAMPLES">EXAMPLES</h1>
+
+<p>input.html file</p>
+
+<p>&lt;html&gt; &lt;head&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/head&gt; &lt;body&gt; &lt;h1&gt;Test&lt;/h1&gt; &lt;p&gt;Not signed part.&lt;/p&gt; &lt;p&gt;-----BEGIN TEXT-----&lt;/p&gt; Text body line 1. Line 2 End. &lt;p&gt;-----END TEXT-----&lt;/p&gt; &lt;p&gt;Not signed part.&lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</p>
+
+<p>Create output.txt file from input.html file</p>
+
+<pre><code>    just-words.pl &lt;input.html &gt;output.txt</code></pre>
+
+<p>output.txt file</p>
+
+
+</body>
+
+</html>
+
+

@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "STDIN 1"
-.TH STDIN 1 "2024-12-14" "perl v5.32.1" "User Contributed Perl Documentation"
+.TH STDIN 1 "2024-12-17" "perl v5.32.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -269,6 +269,12 @@ The signature is only valid for the text between those lines.
 .PP
 The file matches the signature at the end of the file. And example.txt
 is created without the signature in the file.
+.SH "ENVIRONMENT"
+.IX Header "ENVIRONMENT"
+cgGpgOpt
+.PP
+This varible defines more gpg options. It is mainly used by
+gpg\-sign\-test.sh so it can be run with not prompts.
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
 gpg

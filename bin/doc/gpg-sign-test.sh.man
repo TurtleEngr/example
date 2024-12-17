@@ -133,24 +133,25 @@
 .\" ========================================================================
 .\"
 .IX Title "STDIN 1"
-.TH STDIN 1 "2024-12-14" "perl v5.32.1" "User Contributed Perl Documentation"
+.TH STDIN 1 "2024-12-17" "perl v5.32.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
 .nh
-.SH "NAME sshagent-test"
-.IX Header "NAME sshagent-test"
+.SH "NAME gpg\-sign\-test.sh"
+.IX Header "NAME gpg-sign-test.sh"
 Test the sshagent script.
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 .Vb 3
-\&    sshagent\-test \-T all
-\&    sshagent\-test \-T list
-\&    sshagent\-test [\-h] [\-H pStyle] [\-T pTest]
+\&    gpg\-sign\-test.sh \-T all
+\&    gpg\-sign\-test.sh \-T list
+\&    gpg\-sign\-test.sh [\-h] [\-H pStyle] [\-T pTest]
 .Ve
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-This script is used to test the sshagent script. See the Notes section
+This script is used to test gpg\-sign.sh and 
+See the Notes section
 for how to set it up and the dependent scipts.
 .SH "OPTIONS"
 .IX Header "OPTIONS"
@@ -184,62 +185,415 @@ names, between the quotes.
 \&\s-1HOME, USER\s0
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
-ssh-agent, ssh, ssh-askpass, shunit2.1, shellcheck
+gpg\-sign.sh, just\-words.pl, gpg, shunit2.1, shellcheck
 .SH "NOTES"
 .IX Header "NOTES"
+.SS "Dependencies"
+.IX Subsection "Dependencies"
 .IP "\(bu" 4
-For more details about shunit2 (or shunit2.1), see
-shunit2/shunit2\-manual.html Source <https://github.com/kward/shunit2>
+The latest versions of gpg\-sign.sh, gpg\-sign\-test.sh, just\-words.pl,
+and shunit2.1 can be found at:
 .Sp
-shunit2.1 has a minor change to fix up colors when background is not black.
-.IP "\(bu" 4
-The latest versions of sshagent, sshagent-test, and shunit2.1 can be
-found at:
 github TurtleEngr <https://github.com/TurtleEngr/my-utility-scripts/tree/main/bin>
+or at
+github TurtleEngr <https://github.com/TurtleEngr/example/tree/photographic-evidence-is-dead/bin>
 .IP "\(bu" 4
-sshagent-test will kill all of your running ssh-agent processes before
-and after running.
+For more details about shunit2 (shunit2.1) see
+shunit2/shunit2\-manual.html
+Source <https://github.com/kward/shunit2>
+.Sp
+shunit2.1 has a minor change to fix up colors when background is not
+black.
+.SS "Test Outline"
+.IX Subsection "Test Outline"
 .IP "\(bu" 4
-sshagent-test requires a non X11 /bin/ssh\-askpass
+If ~/.cache/gpg\-sign\-test (with the test sample files) is not found
+then it will be created by this script. Also a test gpg homedir and
+test key will be created.
 .Sp
-Create this substitute:
+To be sure everything is up-to-date with the tests, you can remove all
+of ~/.cache/gpg\-sign\-test so it will be rebuilt.
+.IP "\(bu" 4
+Test just\-words.pl
 .Sp
-.Vb 6
-\&    cat <<EOF >~/bin/ssh\-askpass
-\&    #!/bin/bash
-\&    read \-t 5 \-p "ssh password? "
-\&    echo $REPLY
-\&    EOF
-\&    chmod a+rx,go\-w ~/bin/ssh\-askpass
+Test gpg\-sign.sh \-c
+.Sp
+.Vb 1
+\&  c\-result\-test\-page.txt.sig
 .Ve
 .Sp
-You can replace the system's ssh-askpass, or you can change your path
-so it finds ssh-askpass in your bin dir.
-.RS 4
-.IP "1. Replace the system's ssh-askpass. As root:" 4
-.IX Item "1. Replace the system's ssh-askpass. As root:"
-.Vb 5
-\&   sudo \-s
-\&   mv \-i /usr/bin/ssh\-askpass /usr/bin/ssh\-askpass.sav
-\&   cp /home/$SUDO_USER/bin/ssh\-askpass /usr/bin
-\&   chmod a+rx,go\-w /usr/bin/ssh\-askpass
-\&   exit
-.Ve
-.IP "2. Change your path so ~/bin is look in first:" 4
-.IX Item "2. Change your path so ~/bin is look in first:"
-.Vb 2
-\&   ed ~/.bash_profile
-\&   PATH=$HOME/bin:$PATH
-.Ve
+Test gpg\-sign.sh \-s
 .Sp
-If you still get the ssh-askass popup, you'll need to use option 1, or
-you can give the test key's password 'foobar' at every prompt.
-.RE
-.RS 4
-.RE
+.Vb 1
+\&  s\-result\-test\-page.txt.sig
+.Ve
+.PP
++ bin/
+  + gpg\-sign.sh
+  + gpg\-sign\-test.sh
++ test/
+  + test.pri
+  + test.pub
+  + test\-page.html
+  + test\-page.txt
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 TurtleEngr
 .SH "HISTORY"
 .IX Header "HISTORY"
 \&\f(CW$Revision:\fR 1.13 $ \f(CW$Date:\fR 2024/11/22 20:28:18 $ \s-1GMT\s0
+.PP
+\&\s-1EOF\s0
+.PP
+.Vb 3
+\&    # ../sample/test.pub
+\&    cat <<EOF >$cgTestDir/gnupg/test.pub
+\&\-\-\-\-\-BEGIN PGP PUBLIC KEY BLOCK\-\-\-\-\-
+.Ve
+.PP
+mQGNBGddqAkBDACeGuc1/Jo8tzcuOzeJivMivVbe94WRDljorPRdfXOv/Boxe+Sx
+CBebDAKpcu2QBBD/8oQBYjYhNcDcnZm1jiX+ZJzNFzsdQ8lAaNqmSNmCRVY8hVld
+w+uLOQCsV2WRaZpjUXNPxtoVBq3ZMslpVCa59+Xm8wHujcQlsJaaoUSK2UWZ/W17
+VXWzhPAJw07S+E48z5qmzgPjxxkuApLWC6nmM4L7PT56eIxxT0rQ4Wjm8O/4Vteg
+hkaeo8UdOgbZFp9fKPSNGg7LBylXoVr6aqN+6FFSC+4lWkRO4mGPN8/vf8fgBPZG
+0LripbAk54xAZahPFp0es/vIYGau//awflkkmwW0WGWannNs1rRLGWvhgR2E32WZ
+1VM+znZC9ii53Lg/P5DCrvxYYjYrGh/H28ueHsFJSMtaGckkDWi8au8fHvVHrItT
+vEo0sFwCWWeC8tOTcsHYU1PNqpFMT4c7NcIRyqLnKrm8Vw7PWUBfnV9ylKObjXc9
+t7sQWjMfquAShvUAEQEAAbQbVGVzdCBLZXkgPHRlc3RAZXhhbXBsZS5jb20+iQHO
+BBMBCgA4FiEEPuEu+RQEXLLLgaza4jlYZSPGd3MFAmddqAkCGwMFCwkIBwIGFQoJ
+CAsCBBYCAwECHgECF4AACgkQ4jlYZSPGd3NphQwAjwdBCZOXjlw0dnHdLAHLlQQO
+99vZmIxQmDvROdkf1XZXQ5EC/zu1g0agwCL7pjlb34KOmMkg+F9i5CFAtbtjZO0L
+RDFODFc2AZep7dZMXEk547YMbZzoMh5WT8xuc584fD79+y4nDDhH//4+5eKHD0wA
+u8/kAPkeraTaHPxQJ7VenWcnjMFgB0qCLSvkEyrYIQf2Fxsp924eUPgtlFlZE8ge
+wm7l1mC4ogW6yBtHwaPggzBMcxaF7O2m0hflw7Ah3UNP1FQGnVaEODqnz/eoEGxI
+77lqTOHrfEKagZtuCDqQwcrOKr00B1X3KxIqdq1WErsnZXqkr9PoHxoNnEoVEwG2
+qjUofNj76inZx1ltealOgpFEYIJxE5CBJHkYuDdKM58Jmpmlk8FZqOQmzhMxK7Xy
+d417rAyTo8Lk3C6NEn3rvtvgWvByju33pu5TR5tbih2cF59fm5yujcsmFV4aNsn1
+QzcuoBfbxqG64Hc0EFlg80pbZwzTi9AlIzY090oUuQGNBGddqAkBDACu0IVeIx6I
+IpLdtC93PqomJNOvkdzcE7oAeMKm/OGUJEaXO0alL5u54+Tm6hYOptkNORm694M3
+x6lf9IaRy+GyMzKFilTWAAf7mvhSuHYRHx8pQzYhfveU1G88MSzaYMnjBSPpKVKl
+Yji67gsX2179IUperTi38SBMmYq8so1UVVD1kBcYu4IPVBiKZSuh41wUuQFmKYI2
+tr6AfajQlcOcNF16Ij4g3Rkp++p8UDrfU7uc6L5fjG8kx7eRbHdv4VSnVCUVsnvV
+Xfr57uFTK7KvGvjYr/Rs5oD2OXR9PrxLrTDdEiSmSMk2rJ1aeH+cHkG8Zlsfxbwc
+VFvi0QcBK+1SXv4+ffH0ebc7bKqzbi/yOmB8aH+c46y+AJeMNBos7t92Yk/5fLYE
+OR7L2d285JsQ4kQV7C+hDoO3IsCQDcm/Dpy6v9cEdS9Km6bnD7H2Kp1rCZc9ekqR
+EPXi61rZ+ixJYglrr4DoW4AXy1idZBjHiEqMZnt1+Q1vebrGbo0AtxcAEQEAAYkB
+tgQYAQoAIBYhBD7hLvkUBFyyy4Gs2uI5WGUjxndzBQJnXagJAhsMAAoJEOI5WGUj
+xndzYOQL/0VOUuq6PGSSQ4U4FVajQZ2zLhkqrlSIJujSUVeKIURq70Bjwtud6UK6
+UoGeKmqtedoVbOeIykXLbA8p7kQB/4YjPAlx67ovBnCPr698bAN603L9EUpz3yHU
+nyFRk9B/wyJNolQR4/pmMbF5v9M43RIc8O30a9/YhZYRZi152VP6NHZp01rS87aR
+KtkHLntwY46+oUdvza2wten8DNM/+hz7vs69P2zMTX3HrvbTONRsJdgchvTVfMf9
+Vd45AkeQu5HMTyuRTp/rXOcuQ9MvQH/mlXS8s+WuYlh6HIt9XuYF18Qm8MjRaEIk
+obiMtLM2IWlBGsUCQ+nrABMPqD7sU4VwlGgFNPElDzcoY475/6ZMuYi1ptXSocDR
+jYlGFn6huQYgHSykCTDF9YgIj+CRYp/ZetrRessfJcDdLpFAiVljuiGWgT3Obx8l
+mbLYH8A6wYvZitOeVZ4Vj0TegLDBN0pSSZ1vRqyit/PfoEtiNwVk1qOr1Ea8/S0B
+j72PELMCQQ==
+=dQKf
+\&\-\-\-\-\-END \s-1PGP PUBLIC KEY BLOCK\-\-\-\-\-
+EOF\s0
+    echo \*(L"gpg \f(CW$cgTestOpt\fR \f(CW$cgTestPass\fR \-\-import \f(CW$cgTestDir\fR/gnupg/test.pri \f(CW$cgTestDir\fR/gnupg/test.pub\*(R" >$cgTestDir/fCreateKey.output
+    gpg \f(CW$cgTestOpt\fR \f(CW$cgTestPass\fR \-\-import \f(CW$cgTestDir\fR/gnupg/test.pri \f(CW$cgTestDir\fR/gnupg/test.pub >>$cgTestDir/fCreateKey.output 2>&1
+    if ! gpg \f(CW$cgTestOpt\fR \-\-list\-key test@example.com &>/dev/null; then
+        echo \*(L"Error: test.pub key could not be defined. [$LINENO]\*(R"
+        exit 1
+    fi
+    if ! gpg \f(CW$cgTestOpt\fR \-\-list\-secret\-key test@example.com &>/dev/null; then
+        echo \*(L"Error: test.pri key could not be defined. [$LINENO]\*(R"
+        exit 1
+    fi
+} # fCreateKey
+.PP
+# ========================================
+# Tests
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBoneTimeSetUp()\fR {
+    # Unset gpTest to prevent infinite loop
+    gpTest=''
+.PP
+.Vb 3
+\&    if [[ \-d $cgTestDir/gnupg ]]; then
+\&        return 0
+\&    fi
+\&    
+\&    mkdir \-p $cgTestDir/gnupg &>/dev/null
+\&    chmod \-R go= $cgTestDir
+\&    fCreateTestPage
+\&    fCreateKey
+\&
+\&    chmod \-R go= $cgTestDir
+\&
+\&    return 0
+\&} # oneTimeSetUp
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBoneTimeTearDown()\fR {
+    if [[ ${_\|_shunit_assertsFailed} \-eq 0 ]]; then
+        rm \-rf \f(CW$cgTestDir\fR
+    fi
+.PP
+.Vb 2
+\&    return 0
+\&} # oneTearDown
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBsetUp()\fR {
+    cd \f(CW$cgCurDir\fR
+    cgGpgOpt=\*(L"$cgTestOpt\*(R"
+.PP
+.Vb 2
+\&    return 0
+\&} # setUp
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtearDown()\fR {
+    cd \f(CW$cgCurDir\fR
+    rm \f(CW$cgTestDir\fR/test\-page.txt.sig 2>/dev/null
+    return 0
+} # tearDown
+.PP
+# ========================================
+.PP
+\&\fBtestSetup()\fR {
+    assertTrue \*(L"[$LINENO] gpg\-sign.sh\*(R" \*(L"[ \-x gpg\-sign.sh ]\*(R"
+    assertTrue \*(L"[$LINENO] just\-words.pl\*(R" \*(L"[ \-x just\-words.pl ]\*(R"
+    assertTrue \*(L"[$LINENO] org2html.shh\*(R" \*(L"[ \-x org2html.sh ]\*(R"
+    assertTrue \*(L"[$LINENO] test\-page.html\*(R" \*(L"[ \-r \f(CW$cgTestDir\fR/test\-page.html ]\*(R"
+    assertTrue \*(L"[$LINENO] \s-1BEGIN\*(R"\s0 \*(L"grep \-q \*(-- '\-\-BEGIN \s-1TEXT\-\-\s0' \f(CW$cgTestDir\fR/test\-page.html ]\*(R"
+    assertTrue \*(L"[$LINENO] test\-page.txt\*(R" \*(L"[ \-r \f(CW$cgTestDir\fR/test\-page.txt ]\*(R"
+    assertFalse \*(L"[$LINENO]\*(R" \*(L"grep \-q \*(-- '\-\-BEGIN \s-1TEXT\-\-\s0' \f(CW$cgTestDir\fR/test\-page.txt ]\*(R"
+.PP
+.Vb 1
+\&    assertTrue "[$LINENO] test\-simple.html" "[ \-r $cgTestDir/test\-simple.html ]"
+\&    
+\&    assertTrue "[$LINENO] gnupg/" "[ \-d $cgTestDir/gnupg ]"
+\&    assertTrue "[$LINENO]" "[ \-r $cgTestDir/gnupg/test.pri ]"
+\&    assertTrue "[$LINENO]" "[ \-r $cgTestDir/gnupg/test.pub ]"
+\&    assertTrue "[$LINENO]" "[ \-w $cgTestDir/gnupg/pubring.kbx ]"
+\&    assertTrue "[$LINENO]" "[ \-w $cgTestDir/gnupg/trustdb.gpg ]"
+\&    
+\&    assertTrue "[$LINENO] pub key" "gpg $cgGpgOpt \-\-list\-key test@example.com &>/dev/null"
+\&    assertTrue "[$LINENO] pri key" "gpg $cgGpgOpt \-\-list\-secret\-key test@example.com &>/dev/null"
+\&
+\&    return 0
+\&} # testSetup
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtestUsageOK()\fR {
+    local tResult
+.PP
+.Vb 2
+\&    tResult=$($cgScript \-h 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "DESCRIPTION"
+\&
+\&    tResult=$($cgScript \-H html 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "<title>gpg\-sign.sh</title>"
+\&
+\&    return 0
+\&} # testUsageOK
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtestUsageError()\fR {
+    local tResult
+.PP
+.Vb 3
+\&    tResult=$($cgScript 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: \-f FILE option is required"
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Usage:"
+\&
+\&    tResult=$($cgScript \-U 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: Unknown option: \-U"
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Usage:"
+\&
+\&    tResult=$($cgScript \-H 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: Value required for option: \-H"
+\&
+\&    return 0
+\&} # testUsageError
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtestJustWordsOK()\fR {
+    local tResult
+.PP
+.Vb 5
+\&    tResult=$($cgCurDir/just\-words.pl <$cgTestDir/test\-simple.html)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Text body line 1. Line 2 End."
+\&    assertNotContains "[$LINENO] $tResult" "$tResult" "BEGIN TEXT"
+\&    assertNotContains "[$LINENO] $tResult" "$tResult" "END TEXT"
+\&    assertNotContains "[$LINENO] $tResult" "$tResult" "Not signed part"
+\&    
+\&    return 0
+\&} # testJustWordsOK
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtestSignOK()\fR {
+    local tResult
+.PP
+.Vb 2
+\&    cgGpgOpt="$cgTestOpt $cgTestPass"
+\&    cd $cgTestDir
+\&
+\&    tResult=$($cgScript \-c \-k test@example.com \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Signed file: test\-page.txt.sig"
+\&    assertContains "[$LINENO] $tResult" "$tResult" "gpg: using \e"test@example.com\e" as default secret key for signing"
+\&    assertTrue "[$LINENO]" "[ \-f $cgTestDir/test\-page.txt.sig ]"
+\&    assertTrue "[$LINENO]" "grep \-q \*(AqBEGIN PGP SIGNED MESSAGE\*(Aq $cgTestDir/test\-page.txt.sig"
+\&    assertTrue "[$LINENO]" "grep \-q \*(AqFour score and seven years ago\*(Aq $cgTestDir/test\-page.txt.sig"
+\&    assertTrue "[$LINENO]" "grep \-q \*(AqBEGIN PGP SIGNATURE\*(Aq $cgTestDir/test\-page.txt.sig"
+\&    assertTrue "[$LINENO]" "grep \-q \*(AqEND PGP SIGNATURE\*(Aq $cgTestDir/test\-page.txt.sig"
+\&    assertTrue "[$LINENO]" "grep \-q \*(Aqwiki/Gettysburg_Address\*(Aq $cgTestDir/test\-page.txt.sig"
+\&
+\&    return 0
+\&} # testSignOK
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtestSignError()\fR {
+    local tResult
+.PP
+.Vb 2
+\&    cgGpgOpt="$cgTestOpt $cgTestPass"
+\&    cd $cgTestDir
+\&
+\&    tResult=$($cgScript \-c \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: \-k KEY option is required"
+\&
+\&    tResult=$($cgScript \-c \-k test\-bad@example.com \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: test\-bad@example.com private key was not found"
+\&
+\&    tResult=$($cgScript \-c \-k test\-bad@example.com \-f test\-page\-bad.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: Cannot find or read: test\-page\-bad.txt"
+\&
+\&    cgGpgOpt="$cgTestOpt ${cgTestPass}BAD"
+\&    tResult=$($cgScript \-c \-k test\-bad@example.com \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: test\-bad@example.com private key was not found"
+\&
+\&    return 0
+\&} # testSignError
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtestSignDetachedOK()\fR {
+    local tResult
+.PP
+.Vb 2
+\&    cgGpgOpt="$cgTestOpt $cgTestPass"
+\&    cd $cgTestDir
+\&
+\&    tResult=$($cgScript \-s \-k test@example.com \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Signature file: test\-page.txt.sig"
+\&    assertContains "[$LINENO] $tResult" "$tResult" "gpg: using \e"test@example.com\e" as default secret key for signing"
+\&
+\&    assertTrue "[$LINENO]" "[ \-f $cgTestDir/test\-page.txt.sig ]"
+\&    assertTrue "[$LINENO]" "grep \-q \*(AqBEGIN PGP SIGNATURE\*(Aq $cgTestDir/test\-page.txt.sig"
+\&    assertTrue "[$LINENO]" "grep \-q \*(AqEND PGP SIGNATURE\*(Aq $cgTestDir/test\-page.txt.sig"
+\&
+\&    return 0
+\&} # testSignDetachedOK
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\&\fBtestSignDetachedError()\fR {
+    local tResult
+.PP
+.Vb 2
+\&    cgGpgOpt="$cgTestOpt ${cgTestPass}"
+\&    cd $cgTestDir
+\&
+\&    tResult=$($cgScript \-s \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: \-k KEY option is required"
+\&
+\&    tResult=$($cgScript \-s \-k test\-bad@example.com \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: test\-bad@example.com private key was not found"
+\&
+\&    tResult=$($cgScript \-s \-k test\-bad@example.com \-f test\-page\-bad.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: Cannot find or read: test\-page\-bad.txt"
+\&
+\&    cgGpgOpt="$cgTestOpt ${cgTestPass}BAD"
+\&    tResult=$($cgScript \-s \-k test\-bad@example.com \-f test\-page.txt 2>&1)
+\&    assertContains "[$LINENO] $tResult" "$tResult" "Error: test\-bad@example.com private key was not found"
+\&
+\&    return 0
+\&} # testSignDetachedError
+.Ve
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+# This should be the last defined function
+\&\fBfRunTests()\fR {
+    if [ \*(L"$gpTest\*(R" = \*(L"list\*(R" ]; then
+        grep 'test.*()' \f(CW$0\fR | grep \-v grep | sed 's/()//g'
+        exit $?
+    fi
+    SHUNIT_COLOR=always
+    if [ \*(L"$gpTest\*(R" = \*(L"all\*(R" ]; then
+        gpTest=""
+        # shellcheck disable=SC1091
+        . shunit2.1
+        exit $?
+    fi
+    # shellcheck disable=SC1091
+    . shunit2.1 \*(-- \f(CW$gpTest\fR
+.PP
+.Vb 2
+\&    exit $?
+\&} # fRunTests
+.Ve
+.PP
+# ========================================
+# Main
+.PP
+if [ $# \-eq 0 ]; then
+    echo \*(L"Error: Missing options. [$LINENO]\*(R"
+    fUsageTest short
+fi
+.PP
+while getopts :hH:T: tArg; do
+    case \f(CW$tArg\fR in
+        h) fUsageTest long ;;
+        H) fUsageTest \*(L"$OPTARG\*(R" ;;
+        T) gpTest=\*(L"$OPTARG\*(R" ;;
+        # Problem arguments
+        :)
+            echo \*(L"Error: Value required for option: \-$OPTARG [$LINENO]\*(R"
+            fUsageTest short
+            ;;
+        \e?)
+            echo \*(L"Error: Unknown option: \f(CW$OPTARG\fR [$LINENO]\*(R"
+            fUsageTest short
+            ;;
+    esac
+done
+shift $((\s-1OPTIND\s0 \- 1))
+if [ $# \-ne 0 ]; then
+    echo \*(L"Unknown option: $* [$LINENO]\*(R"
+    fUsageTest short
+fi
+.PP
+# Set current directory location
+if [ \-z \*(L"$PWD\*(R" ]; then
+    PWD=$(pwd)
+fi
+cgCurDir=$PWD
+.PP
+cgScript=$PWD/gpg\-sign.sh
+if [[ ! \-x ${cgScript%/*} ]]; then
+    echo \*(L"Error: You need to be cd'ed to bin/ where \f(CW$cgScript\fR is located. [$LINENO]\*(R"
+    fUsageTest short
+fi
+.PP
+# \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+if [ \-n \*(L"$gpTest\*(R" ]; then
+    fRunTests
+fi
+.PP
+echo \*(L"Error: Missing options [$LINENO]\*(R"
+fUsageTest short
+.PP
+exit 1

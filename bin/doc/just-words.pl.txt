@@ -1,0 +1,34 @@
+    Remove all tags and duplicate white space, but leave href links.
+
+    Text before "--BEGIN TEXT--" and after "--END TEXT--" will removed.
+
+    Now only the text content remains.
+
+    Usage: just-words.pl <FILE.html >FILE.txt
+
+NAME
+    just-words.pl - Remove all tags and duplicate white space
+
+SYNOPSIS
+        just-words.pl <FILE.html >FILE.txt
+
+DESCRIPTION
+    Remove all tags and duplicate white space, but leave href links.
+
+    Text before '--BEGIN TEXT--' will be ignored.
+
+    Text after '--END TEXT--' will be ignored.
+
+EXAMPLES
+    input.html file
+
+    <html> <head><title>Test</title></head> <body> <h1>Test</h1> <p>Not
+    signed part.</p> <p>-----BEGIN TEXT-----</p> Text body line 1. Line 2
+    End. <p>-----END TEXT-----</p> <p>Not signed part.</p> </body> </html>
+
+    Create output.txt file from input.html file
+
+        just-words.pl <input.html >output.txt
+
+    output.txt file
+

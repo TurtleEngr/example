@@ -126,6 +126,13 @@ The signature is only valid for the text between those lines.
 The file matches the signature at the end of the file. And example.txt
 is created without the signature in the file.
 
+# ENVIRONMENT
+
+cgGpgOpt
+
+This varible defines more gpg options. It is mainly used by
+gpg-sign-test.sh so it can be run with not prompts.
+
 # SEE ALSO
 
 gpg
