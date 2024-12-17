@@ -1,4 +1,4 @@
-# Makefile for photographic-evidence-is-dead
+# Makefile for photographic-evidence-is-dead code and sample files
 
 # --------------------
 # Vars
@@ -30,6 +30,11 @@ publish release push : clean ci
 	git push origin $(mBranch)
 
 # --------------------
+
+diff-from-bin : $(mBinList)
+	@for i in $(mBinList); do \
+		diff -q $$i ~/$$i; \
+	done
 
 update-from-bin : $(mBinList)
 	cd bin; doc-fmt $$(find * -prune -type f -executable)
