@@ -282,4 +282,4 @@ gpg
 .IX Header "HISTORY"
 GPLv2 (c) Copyright
 .PP
-\&\f(CW$Revision:\fR 1.1 $ \f(CW$Date:\fR 2024/12/13 05:39:04 $ \s-1GMT\s0
+\&\f(CW$Revision:\fR 1.2 $ \f(CW$Date:\fR 2024/12/17 05:23:41 $ \s-1GMT\s0

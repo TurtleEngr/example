@@ -138,43 +138,81 @@
 .\" way too many mistakes in technical documents.
 .if n .ad l
 .nh
-.SH "NAME just\-words.pl"
-.IX Header "NAME just-words.pl"
-Remove all tags and duplicate white space
+.SH "NAME org2html.sh"
+.IX Header "NAME org2html.sh"
+Comvert \s-1FILE\s0.org to \s-1FILE\s0.html
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-.Vb 1
-\&    just\-words.pl <FILE.html >FILE.txt
+.Vb 3
+\&    org2html.sh FILE.org FILE.html
+\&    org2html.sh \-i FILE.org \-o FILE.html
+\&    org2html.sh [\-h] [\-H pStyle]
 .Ve
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-Remove all tags and duplicate white space, but leave href links.
+\&\s-1FILE\s0.org will be converted to \s-1FILE\s0.html. It has some fixes to the
+\&\*(L"pandoc\*(R" conversion.
 .PP
-Text before '\-\-BEGIN \s-1TEXT\-\-\s0' will be ignored.
-.PP
-Text after '\-\-END \s-1TEXT\-\-\s0' will be ignored.
-.SH "EXAMPLES"
-.IX Header "EXAMPLES"
-input.html file
-.PP
-<html>
-<head><title>Test</title></head>
-<body>
-<h1>Test</h1>
-<p>Not signed part.</p>
-<p>\-\-\-\-\-BEGIN TEXT\-\-\-\-\-</p>
-Text body line 1.
-Line 2
-End.
-<p>\-\-\-\-\-END TEXT\-\-\-\-\-</p>
-<p>Not signed part.</p>
-</body>
-</html>
-.PP
-Create output.txt file from input.html file
-.PP
-.Vb 1
-\&    just\-words.pl <input.html >output.txt
+Before org2html.sh is run, all files in \f(CW$Tmp\fR are removed, unless
+env. var. gpDebug is set and not 0.
+.SS "Replacements"
+.IX Subsection "Replacements"
+.Vb 5
+\&    \*(Aq+ \*(Aq \- will be changed to <li>
+\&    \*(Aq\- \*(Aq \- will be regular paragraphs
+\&    \*(Aq**** \*(Aq \- will be replaced with <h4> (similarly for 5 and 6 *)
+\&    \*(Aq{.*}\*(Aq \- will be replaced with <cite>.*</cite>
+\&    \*(Aq[TBD.*] \- will be replaced with <span class="tbd">[TBD.*]</span>
+.Ve
+.SH "OPTIONS"
+.IX Header "OPTIONS"
+.IP "\fB\-i \s-1FILE\s0.org\fR" 4
+.IX Item "-i FILE.org"
+Input file.
+.IP "\fB\-o \s-1FILE\s0.html\fR" 4
+.IX Item "-o FILE.html"
+Output file. If not specfied the extension will be removed from the
+input file and \*(L".html\*(R" will be appended.
+.IP "\fB\-h\fR" 4
+.IX Item "-h"
+Output this \*(L"long\*(R" usage help. See \*(L"\-H long\*(R"
+.IP "\fB\-H pStyle\fR" 4
+.IX Item "-H pStyle"
+pStyle is used to select the type of help and how it is formatted.
+.Sp
+Styles:
+.Sp
+.Vb 5
+\&    short|usage \- Output short usage help as text.
+\&    long|text   \- Output long usage help as text.
+\&    man         \- Output long usage help as a man page.
+\&    html        \- Output long usage help as html.
+\&    md          \- Output long usage help as markdown.
 .Ve
 .PP
-output.txt file
+If no options, file order matters.
+.PP
+.Vb 1
+\&    org2html test.org test.html
+.Ve
+.PP
+Use the \-i and \-o options
+.PP
+.Vb 1
+\&    org2html \-o test.html \-i test.org
+.Ve
+.PP
+Output file will default to test.html
+.PP
+.Vb 1
+\&    org2html \-i test.org
+.Ve
+.SH "ENVIRONMENT"
+.IX Header "ENVIRONMENT"
+.Vb 2
+\&    Tmp \- if not set, set it to: /tmp/$USER/org2html.sh"}
+\&    gpDebug \- if set not equal to 0, all files in $Tmp will be removed
+.Ve
+.SH "HISTORY"
+.IX Header "HISTORY"
+GPLv2 (c) Copyright

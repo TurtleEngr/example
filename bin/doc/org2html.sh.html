@@ -1,0 +1,117 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>org2html.sh</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME-org2html.sh">NAME org2html.sh</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#Replacements">Replacements</a></li>
+    </ul>
+  </li>
+  <li><a href="#OPTIONS">OPTIONS</a></li>
+  <li><a href="#ENVIRONMENT">ENVIRONMENT</a></li>
+  <li><a href="#HISTORY">HISTORY</a></li>
+</ul>
+
+<hr/>
+
+<h1 id="NAME-org2html.sh">NAME org2html.sh</h1>
+
+<p>Comvert FILE.org to FILE.html</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    org2html.sh FILE.org FILE.html
+    org2html.sh -i FILE.org -o FILE.html
+    org2html.sh [-h] [-H pStyle]</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>FILE.org will be converted to FILE.html. It has some fixes to the &quot;pandoc&quot; conversion.</p>
+
+<p>Before org2html.sh is run, all files in $Tmp are removed, unless env. var. gpDebug is set and not 0.</p>
+
+<h2 id="Replacements">Replacements</h2>
+
+<pre><code>    &#39;+ &#39; - will be changed to &lt;li&gt;
+    &#39;- &#39; - will be regular paragraphs
+    &#39;**** &#39; - will be replaced with &lt;h4&gt; (similarly for 5 and 6 *)
+    &#39;{.*}&#39; - will be replaced with &lt;cite&gt;.*&lt;/cite&gt;
+    &#39;[TBD.*] - will be replaced with &lt;span class=&quot;tbd&quot;&gt;[TBD.*]&lt;/span&gt;</code></pre>
+
+<h1 id="OPTIONS">OPTIONS</h1>
+
+<dl>
+
+<dt id="i-FILE.org"><b>-i FILE.org</b></dt>
+<dd>
+
+<p>Input file.</p>
+
+</dd>
+<dt id="o-FILE.html"><b>-o FILE.html</b></dt>
+<dd>
+
+<p>Output file. If not specfied the extension will be removed from the input file and &quot;.html&quot; will be appended.</p>
+
+</dd>
+<dt id="h"><b>-h</b></dt>
+<dd>
+
+<p>Output this &quot;long&quot; usage help. See &quot;-H long&quot;</p>
+
+</dd>
+<dt id="H-pStyle"><b>-H pStyle</b></dt>
+<dd>
+
+<p>pStyle is used to select the type of help and how it is formatted.</p>
+
+<p>Styles:</p>
+
+<pre><code>    short|usage - Output short usage help as text.
+    long|text   - Output long usage help as text.
+    man         - Output long usage help as a man page.
+    html        - Output long usage help as html.
+    md          - Output long usage help as markdown.</code></pre>
+
+</dd>
+</dl>
+
+<p>If no options, file order matters.</p>
+
+<pre><code>    org2html test.org test.html</code></pre>
+
+<p>Use the -i and -o options</p>
+
+<pre><code>    org2html -o test.html -i test.org</code></pre>
+
+<p>Output file will default to test.html</p>
+
+<pre><code>    org2html -i test.org</code></pre>
+
+<h1 id="ENVIRONMENT">ENVIRONMENT</h1>
+
+<pre><code>    Tmp - if not set, set it to: /tmp/$USER/org2html.sh&quot;}
+    gpDebug - if set not equal to 0, all files in $Tmp will be removed</code></pre>
+
+<h1 id="HISTORY">HISTORY</h1>
+
+<p>GPLv2 (c) Copyright</p>
+
+
+</body>
+
+</html>
+
+

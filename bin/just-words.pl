@@ -2,20 +2,9 @@
 
 =pod
 
-Remove all tags and duplicate white space, but leave href links.
+=head1 NAME just-words.pl
 
-Text before "--BEGIN TEXT--" and after "--END TEXT--" will removed.
-
-Now only the text content remains.
-
-Usage:
-     just-words.pl <FILE.html >FILE.txt
-
-=pod
-
-=head1 NAME
-
-just-words.pl - Remove all tags and duplicate white space
+Remove all tags and duplicate white space
 
 =head1 SYNOPSIS
 

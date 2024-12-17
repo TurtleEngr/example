@@ -1,0 +1,63 @@
+========================================
+NAME org2html.sh
+    Comvert FILE.org to FILE.html
+
+SYNOPSIS
+        org2html.sh FILE.org FILE.html
+        org2html.sh -i FILE.org -o FILE.html
+        org2html.sh [-h] [-H pStyle]
+
+DESCRIPTION
+    FILE.org will be converted to FILE.html. It has some fixes to the
+    "pandoc" conversion.
+
+    Before org2html.sh is run, all files in $Tmp are removed, unless env.
+    var. gpDebug is set and not 0.
+
+  Replacements
+        '+ ' - will be changed to <li>
+        '- ' - will be regular paragraphs
+        '**** ' - will be replaced with <h4> (similarly for 5 and 6 *)
+        '{.*}' - will be replaced with <cite>.*</cite>
+        '[TBD.*] - will be replaced with <span class="tbd">[TBD.*]</span>
+
+OPTIONS
+    -i FILE.org
+        Input file.
+
+    -o FILE.html
+        Output file. If not specfied the extension will be removed from the
+        input file and ".html" will be appended.
+
+    -h  Output this "long" usage help. See "-H long"
+
+    -H pStyle
+        pStyle is used to select the type of help and how it is formatted.
+
+        Styles:
+
+            short|usage - Output short usage help as text.
+            long|text   - Output long usage help as text.
+            man         - Output long usage help as a man page.
+            html        - Output long usage help as html.
+            md          - Output long usage help as markdown.
+
+    If no options, file order matters.
+
+        org2html test.org test.html
+
+    Use the -i and -o options
+
+        org2html -o test.html -i test.org
+
+    Output file will default to test.html
+
+        org2html -i test.org
+
+ENVIRONMENT
+        Tmp - if not set, set it to: /tmp/$USER/org2html.sh"}
+        gpDebug - if set not equal to 0, all files in $Tmp will be removed
+
+HISTORY
+    GPLv2 (c) Copyright
+
