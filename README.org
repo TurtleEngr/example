@@ -14,8 +14,8 @@
   files that are on develop.
 ** Branch TOC
 *** photographic-evidence-is-dead
-- TBD
-+ Photographic Evidence is Dead (TBD)
+
++ [[https://slowengineering.wordpress.com/2024/12/17/photographic-evidence-is-dead/][Photographic Evidence is Dead]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-17)
 
 *** [[https://github.com/TurtleEngr/example/tree/passwordless-ssh-keys][passwordless-ssh-keys]]
 - TBD
