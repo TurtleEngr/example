@@ -23,11 +23,11 @@ clean :
 	-find . -name 'pod2htmd.tmp' -exec rm {} \;
 
 save ci : clean
-	git pull origin $(mBranch)
-	git ci -am Updated
+	-git pull origin $(mBranch)
+	-git ci -am Updated
 
 publish release push : clean ci
-	git push origin $(mBranch)
+	-git push origin $(mBranch)
 
 # --------------------
 
