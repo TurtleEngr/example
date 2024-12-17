@@ -36,15 +36,31 @@
 
 <h1 id="EXAMPLES">EXAMPLES</h1>
 
-<p>input.html file</p>
+<p>input.html file:</p>
 
-<p>&lt;html&gt; &lt;head&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/head&gt; &lt;body&gt; &lt;h1&gt;Test&lt;/h1&gt; &lt;p&gt;Not signed part.&lt;/p&gt; &lt;p&gt;-----BEGIN TEXT-----&lt;/p&gt; Text body line 1. Line 2 End. &lt;p&gt;-----END TEXT-----&lt;/p&gt; &lt;p&gt;Not signed part.&lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</p>
+<pre><code>    &lt;html&gt;
+    &lt;head&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;
+    &lt;h1&gt;Test&lt;/h1&gt;
+    &lt;p&gt;Not signed part.&lt;/p&gt;
+    &lt;p&gt;-----BEGIN TEXT-----&lt;/p&gt;
+    &lt;p&gt;Text body line 1.&lt;/p&gt;
+    &lt;p&gt;Line 2&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/just-words.pl&quot;&gt;
+    just-words.pl&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;-----END TEXT-----&lt;/p&gt;
+    &lt;p&gt;Not signed part.&lt;/p&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+ </code></pre>
 
-<p>Create output.txt file from input.html file</p>
+<p>Create output.txt file from input.html file:</p>
 
 <pre><code>    just-words.pl &lt;input.html &gt;output.txt</code></pre>
 
-<p>output.txt file</p>
+<p>output.txt file:</p>
+
+<pre><code>    Text body line 1. Line 2 End. https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/just-words.pl just-words.pl</code></pre>
 
 
 </body>

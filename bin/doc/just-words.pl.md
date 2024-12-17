@@ -16,24 +16,28 @@ Text after '--END TEXT--' will be ignored.
 
 # EXAMPLES
 
-input.html file
+input.html file:
 
-&lt;html>
-&lt;head>&lt;title>Test&lt;/title>&lt;/head>
-&lt;body>
-&lt;h1>Test&lt;/h1>
-&lt;p>Not signed part.&lt;/p>
-&lt;p>-----BEGIN TEXT-----&lt;/p>
-Text body line 1.
-Line 2
-End.
-&lt;p>-----END TEXT-----&lt;/p>
-&lt;p>Not signed part.&lt;/p>
-&lt;/body>
-&lt;/html>
+       <html>
+       <head><title>Test</title></head>
+       <body>
+       <h1>Test</h1>
+       <p>Not signed part.</p>
+       <p>-----BEGIN TEXT-----</p>
+       <p>Text body line 1.</p>
+       <p>Line 2</p>
+       <p><a href="https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/just-words.pl">
+       just-words.pl</a></p>
+       <p>-----END TEXT-----</p>
+       <p>Not signed part.</p>
+       </body>
+       </html>
+    
 
-Create output.txt file from input.html file
+Create output.txt file from input.html file:
 
     just-words.pl <input.html >output.txt
 
-output.txt file
+output.txt file:
+
+    Text body line 1. Line 2 End. https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/just-words.pl just-words.pl
