@@ -4,10 +4,10 @@ set -u
 # --------------------
 # Globals
 export cgCurDir
+export cgGpgOpt
 export cgName=gpg-sign-test.sh
 export cgTestDir=~/.cache/gpg-sign-test
 export cgScript
-export cgTestOpt
 export cgTestPass
 export gErr=0
 export gpDebug=0
@@ -211,19 +211,34 @@ EOF
 
 # --------------------
 fCreateTestPage() {
+    # ../sample/sample-2.html
     cat <<EOF >$cgTestDir/test-page.html
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type"
+        content="text/html; charset=utf-8" />
+  <title>Gettysburg Address</title>
+</head>
 <body>
-<p>Foo bar.</p>
+  <h1 id="gettysburg-address">Gettysburg Address</h1>
+  <p><span class="underline">___<sub>BEGIN</sub> TEXT____</span></p>
+  <p>Four score and seven years ago our fathers brought forth on this
+  continent, a new nation, conceived in Liberty, and dedicated to the
+  proposition that all men are created equal.</p>
+  <p>Source: <a href=
+  "https://en.wikipedia.org/wiki/Gettysburg_Address">Gettysburg
+  Address</a></p>
+  <p><span class="underline">___<sub>END</sub> TEXT____</span></p>
 </body>
 </html>
 EOF
-
     ./justwords.pl <$cgTestDir/test-page.html >$cgTestDir/test-page.txt
 }
 
 # --------------------
 fCreateKey() {
+    # ../sample/test.pri
     cat <<EOF >$cgTestDir/gnupg/test.pri
 -----BEGIN PGP PRIVATE KEY BLOCK-----
 
@@ -310,7 +325,9 @@ t/PfoEtiNwVk1qOr1Ea8/S0Bj72PELMCQQ==
 -----END PGP PRIVATE KEY BLOCK-----
 
 EOF
-    cat <<EOF >$cgTestDir/gnupg/test.pub
+
+    # ../sample/test.pub
+    cat <<EOF >$cgTestDir/gnupg/test.pri
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQGNBGddqAkBDACeGuc1/Jo8tzcuOzeJivMivVbe94WRDljorPRdfXOv/Boxe+Sx
@@ -353,9 +370,7 @@ j72PELMCQQ==
 =dQKf
 -----END PGP PUBLIC KEY BLOCK-----
 EOF
-
-    gpg $cgTestOpt $cgTestPass --import $cgTestDir/gnupg/test.pri $cgTestDir/gnupg/test.pub
-
+    gpg $cgGpgOpt $cgTestPass --import $cgTestDir/gnupg/test.pri $cgTestDir/gnupg/test.pub
     if ! gpg --list-key test@example.com &>/dev/null; then
         echo "Error: test.pub key could not be defined. [$LINENO]"
         exit 1
@@ -374,8 +389,8 @@ oneTimeSetUp() {
     # Unset gpTest to prevent infinite loop
     gpTest=''
 
-    cgTestPass="--passphrase test"
-    cgTestOpt="--batch --no-tty --yes --no-permission-warning --homedir $cgTestDir/gnupg"
+    cgTestPass="--passphrase test --pinentry-mode loopback"
+    cgGpgOpt="--batch --no-tty --yes --no-permission-warning --homedir $cgTestDir/gnupg"
     
     mkdir -p $cgTestDir/gnupg &>/dev/null
     chmod -R go= $cgTestDir

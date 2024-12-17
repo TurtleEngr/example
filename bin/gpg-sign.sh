@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -u
 
+export cName=gpg-sign.sh
+export cBin
+export cgGpgOpt=${cgGpgOpt:-""}
+export gpSign=0
+export gpKey=""
+export gpFile=""
+
 # ========================================
 # Functions
 
@@ -181,7 +188,12 @@ The signature is only valid for the text between those lines.
 The file matches the signature at the end of the file. And example.txt
 is created without the signature in the file.
 
-=for comment =head1 ENVIRONMENT
+=head1 ENVIRONMENT
+
+cgGpgOpt
+
+This varible defines more gpg options. It is mainly used by
+gpg-sign-test.sh so it can be run with not prompts.
 
 =for comment =head1 FILES
 
@@ -215,8 +227,8 @@ EOF
 # ========================================
 # Main
 
-cName=gpg-sign.sh
-cBin=${0%/*}
+export cName=gpg-sign.sh
+export cBin=${0%/*}
 if [[ "$cBin" = "." ]]; then
     cBin=$PWD
 fi
@@ -234,7 +246,6 @@ fi
 gpSign=0
 gpKey=""
 gpFile=""
-tSig=""
 while getopts :sck:f:hH: tArg; do
     case $tArg in
         # Script arguments
@@ -270,6 +281,8 @@ if [[ ! -r $gpFile ]]; then
     fUsage usage
 fi
 
+tSig=${gpFile}.sig
+
 # Signing checks
 if [[ $gpSign -ne 0 ]]; then
     if [[ -z $gpKey ]]; then
@@ -280,14 +293,16 @@ if [[ $gpSign -ne 0 ]]; then
         echo "Error: Cannot write to current directory [$LINENO]"
         fUsage usage
     fi
-    tSig=${gpFile}.sig
+    if ! gpg --list-secret-key $gpKey &>/dev/null; then
+        echo "Error: $gpKey private key was not found. [$LINENO]"
+        exit 1
+    fi
 fi
 
 # Verify checks
 if [[ $gpSign -eq 0 ]]; then
     if [[ "${gpFile}" = "${gpFile%.sig}" ]]; then
         tVerify=1
-        tSig=${gpFile}.sig
         if [[ ! -r $tSig ]]; then
             echo "Error: Cannot verify. Missing signature file: $tSig [$LINENO]"
             fUsage usage
@@ -301,27 +316,30 @@ fi
 # Functional section
 
 if [[ $gpSign -eq 1 ]]; then
-    echo "gpg --default-key $gpKey --detach-sign --armor -o $tSig $gpFile"
-    gpg --default-key $gpKey --detach-sign --armor -o $tSig $gpFile
+    echo "gpg --default-key $gpKey --detach-sign --armor -o $tSig $cgGpgOpt $gpFile"
+    gpg --default-key $gpKey --detach-sign --armor -o $tSig $cgGpgOpt $gpFile
     echo "Signature file: $tSig"
     exit
 fi
 
 if [[ $gpSign -eq 2 ]]; then
-    echo "gpg --default-key $gpKey --clear-sign -o $tSig $gpFile"
-    gpg --default-key $gpKey --clear-sign -o $tSig $gpFile
+    echo "gpg --default-key $gpKey --clear-sign -o $tSig $cgGpgOpt $gpFile"
+    gpg --default-key $gpKey --clear-sign -o $tSig $cgGpgOpt $gpFile
     echo "Signed file: $tSig"
     exit
 fi
 
 if [[ $tVerify -eq 1 ]]; then
-    echo "gpg --verify $tSig $gpFile"
-    gpg --verify $tSig $gpFile
+    echo "gpg --verify $tSig $cgGpgOpt $gpFile"
+    if ! gpg --verify $tSig $cgGpgOpt $gpFile; then
+        echo "Do you have the public key for the signing user? [$LINENO]"
+    fi
     exit
 fi
 
 if [[ $tVerify -eq 2 ]]; then
-    echo "gpg --decrypt $gpFile"
-    gpg $gpFile
+    echo "gpg $cgGpgOpt $gpFile"
+    if ! gpg $cgGpgOpt $gpFile; then
+        echo "Do you have the public key for the signing user? [$LINENO]"
     exit
 fi
