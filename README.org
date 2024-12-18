@@ -1,7 +1,25 @@
 * Clean Code - Examples
 
-+ Clean Code - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (YYYY-MM-DD)
-+ Clean Code - [[https://medium.com/][Medium article]] (YYYY-MM-DD)
++ [[https://slowengineering.wordpress.com/2021/02/25/clean-code/][Clean Code]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2021–02–25)
++ [[https://medium.com/slow-engineering/clean-code-aadbb6cdcaf0][Clean Code]] - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (2021-02-25)
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
 ** TOC
+
+** Related Links
++ [[https://developers.google.com/apps-script][Google App Script]]
++ [[https://www.youtube.com/watch?v=kScFczWbwRM][FULL HOUR with Robert "Uncle Bob" Martin]] - TDD video
++ [[https://hackernoon.com/why-senior-devs-write-dumb-code-and-how-to-spot-a-junior-from-a-mile-away-27fa263b101a][Why Senior Devs Write Dumb Code and How to Spot a Junior From A Mile Away]]
++ [[https://github.com/TurtleEngr/gdrive-rename-files][gdrive-rename-files]] - code that uses this routine
++ [[https://github.com/TurtleEngr/gsunit-test][gsunit-test]] - Google App Script Unit test framework
++ [[https://moria.whyayh.com/work/error-handling/][A transaction approach to error handling]] - a paper I wrote (1994)
++ [[https://drive.google.com/drive/folders/1fvYI6-K9wnxigz4XJovfEhzoY0m1_liI?usp=sharing][Google Drive -> Released -> Software folder]] - you can copy the
+  Google spreadsheet "rename-files-v1.xx" from there. You can see the
+  attached code by selecting the menu "Tools -> Script editor
+
++ [[https://www.youtube.com/watch?v=7EmboKQH8lM][Clean Code - Uncle Bob / Lesson 1]]
++ [[https://www.youtube.com/watch?v=2a_ytyt9sf8][Clean Code - Uncle Bob / Lesson 2]]
++ [[https://www.youtube.com/watch?v=Qjywrq2gM8o][Clean Code - Uncle Bob / Lesson 3]]
++ [[https://www.youtube.com/watch?v=58jGpV2Cg50][Clean Code - Uncle Bob / Lesson 4]]
++ [[https://www.youtube.com/watch?v=sn0aFEMVTpA][Clean Code - Uncle Bob / Lesson 5]]
++ [[https://www.youtube.com/watch?v=l-gF0vDhJVI][Clean Code - Uncle Bob / Lesson 6]]
