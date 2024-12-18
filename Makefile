@@ -1,18 +1,22 @@
-# General Makefile for managing example code.
-# This should only be modified on the develop branch.
-# See the template/Makefile for the other branches.
+# Makefile for BRANCH-NAME
+# Copy this to top dir, replacing the develop Makefile
 
 # --------------------
 # Vars
 
 SHELL = /bin/bash
-mBranch = develop
+mBranch = release-engineering-101
+
+mBinList = \
+	bin/doc-fmt \
+	bin/shunit2.1
 
 # --------------------
 # Main targets
 
 clean :
-	find . -name '*~' -exec rm {} \;
+	-find . -name '*~' -exec rm {} \;
+	-find . -name 'pod2htmd.tmp' -exec rm {} \;
 
 save ci : clean
 	git pull origin $(mBranch)
@@ -22,7 +26,15 @@ publish release push : save
 	git push origin $(mBranch)
 
 # --------------------
+
+update-from-bin : $(mBinList)
+	cd bin; doc-fmt $$(find * -prune -type f -executable)
+
+# --------------------
 # Rules
 
 %.html : %.org
 	org2html.sh $< $@
+
+bin/% : ~/bin/%
+	cp $< $@

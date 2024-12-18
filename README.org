@@ -1,37 +1,8 @@
-* example
-- This repository is used for example code that is referenced by
-  various articles I have written.
+* ARTICLE TITLE - Examples
+- Sample README for branches. Copy this to top README.org on the branch.
 
-- Why not use github's gists? The long hash codes in the URL them hard
-  to rember and use.
++ Article link - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (YYYY-MM-DD)
++ Article link - [[https://medium.com/][Medium article]] (YYYY-MM-DD)
++ [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
-** Organization
-+ develop branch is only used for some mainenance scripts.
-+ Branches are used to categorize code that is referenced by articles.
-  Think of branches as separate repos.q
-+ The branches are never merged back to develop.
-+ develop can be merged to any branch, but not if the branch replaces
-  files that are on develop.
-** Branch TOC
-*** photographic-evidence-is-dead
-- TBD
-+ Photographic Evidence is Dead (TBD)
-
-*** [[https://github.com/TurtleEngr/example/tree/passwordless-ssh-keys][passwordless-ssh-keys]]
-- TBD
-+ [[https://slowengineering.wordpress.com/2024/12/12/passwordless-ssh-keys/][Passwordless ssh keys]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-12)
-+ [[https://medium.com/slow-engineering/passwordless-ssh-keys-6ddc79bec3f8][Passwordless ssh keys]] - [[https://medium.com/][Medium article]] (2024-09-19)
-
-*** release-engineering-101
-- TBD
-+ [[https://medium.com/slow-engineering/release-engineering-101-54d0ac60f6fd][Release Engineering 101]] - [[https://medium.com/][Medium article]] (2023-07-25)
-+ [[https://slowengineering.wordpress.com/2022/12/30/release-engineering-101/][Release Engineering 101]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2022-12-30)
-
-*** general-release-directory-structures
-- TBD
-+ [[https://slowengineering.wordpress.com/2022/12/26/general-release-directory-structures/][General Release Directory Structures]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2022-12-26)
-
-*** clean-code
-- TBD
-+ [[https://slowengineering.wordpress.com/2021/02/25/clean-code/][Clean Code]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2021-02-25)
-+ [[https://medium.com/slow-engineering/clean-code-aadbb6cdcaf0][Clean Code]] - [[https://medium.com/][Medium article]] (2021-02-25)
+** TOC

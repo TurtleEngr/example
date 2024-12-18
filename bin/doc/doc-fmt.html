@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc-fmt</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME-doc-fmt">NAME doc-fmt</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#OPTIONS">OPTIONS</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+  <li><a href="#HISTORY">HISTORY</a></li>
+</ul>
+
+<hr/>
+
+<h1 id="NAME-doc-fmt">NAME doc-fmt</h1>
+
+<pre><code>    doc-fmt outputs a script&#39;s documentaion to doc/</code></pre>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    doc-fmt [-h] [-H pStyle] [-T pTest] pScript...</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Output each pScript&#39;s documentation to doc/ directory. If the pScript file is older than doc/pScript.txt, then nothing is output.</p>
+
+<p>If a pScript contains &#39;=pod&#39;, then output: doc/pScript.man, doc/pScript.txt, doc/pScript.html, and doc/pScript.md</p>
+
+<p>If a pScript contains &#39;=internal-pod&#39;, then output: doc/pScript.int.txt, doc/pScript.int.html, and doc/pScript.int.md</p>
+
+<p>If a pScript does not contain &#39;=pod&#39;, then execute:</p>
+
+<pre><code>    ./pScript -h &gt;doc/pScript.txt</code></pre>
+
+<h1 id="OPTIONS">OPTIONS</h1>
+
+<dl>
+
+<dt id="h"><b>-h</b></dt>
+<dd>
+
+<p>Output this &quot;long&quot; usage help. See &quot;-H long&quot;</p>
+
+</dd>
+<dt id="H-pStyle"><b>-H pStyle</b></dt>
+<dd>
+
+<p>pStyle is used to select the type of help and how it is formatted.</p>
+
+<p>Styles:</p>
+
+<pre><code>    short|usage - Output short usage help as text.
+    long|text   - Output long usage help as text.
+    man         - Output long usage help as a man page.
+    html        - Output long usage help as html.
+    md          - Output long usage help as markdown.</code></pre>
+
+</dd>
+<dt id="T-pTest"><b>-T &quot;pTest&quot;</b></dt>
+<dd>
+
+<p>Run the unit test functions in this script.</p>
+
+<p>&quot;<b>-T all</b>&quot; will run all of the functions that begin with &quot;test&quot;.</p>
+
+<p>&quot;<b>-T list</b>&quot; will list all of the test functions.</p>
+
+<p>Otherwise, &quot;<b>pTest</b>&quot; should match the test function names separated with spaces (between quotes).</p>
+
+<p>For more help, see template.sh</p>
+
+</dd>
+</dl>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>shunit2.1 bash-com.inc</p>
+
+<h1 id="DIAGNOSTICS">DIAGNOSTICS</h1>
+
+<p>To verify the script is internally OK, run: doc-fmt -T all</p>
+
+<h1 id="HISTORY">HISTORY</h1>
+
+<p>GPLv3 (c) Copyright 2023</p>
+
+<p>$Revision: 1.7 $ $Date: 2024/12/17 05:53:18 $ GMT</p>
+
+
+</body>
+
+</html>
+
+
