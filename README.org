@@ -14,7 +14,7 @@
 
 ** Branch TOC
 
-*** photographic-evidence-is-dead
+*** [[https://github.com/TurtleEngr/example/tree/photographic-evidence-is-dead][photographic-evidence-is-dead]]
 + [[https://medium.com/slow-engineering/photographic-evidence-is-dead-e9b495aca7b0][Photographic Evidence is Dead]] - [[https://medium.com/slow-engineering][Slow Engineering]] - Medium (2024-12-17)
 + [[https://slowengineering.wordpress.com/2024/12/17/photographic-evidence-is-dead/][Photographic Evidence is Dead]] - [[https://slowengineering.wordpress.com/][Slow Engineering]] - blog (2024-12-17)
 
@@ -22,15 +22,14 @@
 + [[https://medium.com/slow-engineering/passwordless-ssh-keys-6ddc79bec3f8][Passwordless ssh keys]] - [[https://medium.com/slow-engineering][Slow Engineering]] - Medium (2024-09-19)
 + [[https://slowengineering.wordpress.com/2024/12/12/passwordless-ssh-keys/][Passwordless ssh keys]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-12)
 
-*** release-engineering-101
+*** [[https://github.com/TurtleEngr/example/tree/release-engineering-101][release-engineering-101]]
 + [[https://medium.com/slow-engineering/release-engineering-101-54d0ac60f6fd][Release Engineering 101]] - [[https://medium.com/slow-engineering][Slow Engineering]] - Medium (2023-07-25)
 + [[https://slowengineering.wordpress.com/2022/12/30/release-engineering-101/][Release Engineering 101]] - [[https://slowengineering.wordpress.com/][Slow Engineering]] - blog (2022-12-30)
 
-*** general-release-directory-structures
+*** [[https://github.com/TurtleEngr/example/tree/general-release-directory-structures][general-release-directory-structures]]
 - TBD
 + [[https://slowengineering.wordpress.com/2022/12/26/general-release-directory-structures/][General Release Directory Structures]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2022-12-26)
 
-*** clean-code
-
+*** [[https://github.com/TurtleEngr/example/tree/clean-code][clean-code]]
 + [[https://medium.com/slow-engineering/clean-code-aadbb6cdcaf0][Clean Code]] - [[https://medium.com/slow-engineering][Slow Engineering]] - Medium (2021-02-25)
 + [[https://slowengineering.wordpress.com/2021/02/25/clean-code/][Clean Code]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2021-02-25)
