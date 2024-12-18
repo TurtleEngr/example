@@ -1,0 +1,401 @@
+#!/bin/bash
+# $Source: /repo/per-bruce.cvs/bin/doc-fmt,v $
+# $Revision: 1.7 $ $Date: 2024/12/17 05:53:18 $ GMT
+
+set -u
+
+# ========================================
+# Script Functions
+
+# --------------------------------
+fUsage() {
+    # Quick help, run this:
+    # doc-fmt -h
+
+    local pStyle="$1"
+
+    case $pStyle in
+        short | usage | man | long | text | md)
+            fComUsage -f $cBin/$cName -s $pStyle | more
+            ;;
+        html)
+            fComUsage -f $cBin/$cName -s $pStyle -t "$cName Usage"
+            ;;
+        *)
+            fComUsage -f $cBin/$cName -s short | more
+            ;;
+    esac
+    fCleanUp
+    # Defect: this exit doesn't seem to work.
+    exit 1
+
+    # POD Syntax: https://perldoc.perl.org/perlpod
+    # pod2man wants the sections defined in this order.
+    # Empty sections can be commented out with "=for comment". For example:
+    # =for comment =head1 ERRORS
+    cat <<\EOF >/dev/null
+=pod
+
+=for text ========================================
+
+=for html <hr/>
+
+=head1 NAME doc-fmt
+
+    doc-fmt outputs a script's documentaion to doc/
+
+=head1 SYNOPSIS
+
+    doc-fmt [-h] [-H pStyle] [-T pTest] pScript...
+
+=head1 DESCRIPTION
+
+Output each pScript's documentation to doc/ directory. If the pScript
+file is older than doc/pScript.txt, then nothing is output.
+
+If a pScript contains '=pod', then output: doc/pScript.man,
+doc/pScript.txt, doc/pScript.html, and doc/pScript.md
+
+If a pScript contains '=internal-pod', then output:
+doc/pScript.int.txt, doc/pScript.int.html, and doc/pScript.int.md
+
+If a pScript does not contain '=pod', then execute:
+
+    ./pScript -h >doc/pScript.txt
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-h>
+
+Output this "long" usage help. See "-H long"
+
+=item B<-H pStyle>
+
+pStyle is used to select the type of help and how it is formatted.
+
+Styles:
+
+    short|usage - Output short usage help as text.
+    long|text   - Output long usage help as text.
+    man         - Output long usage help as a man page.
+    html        - Output long usage help as html.
+    md          - Output long usage help as markdown.
+
+=item B<-T "pTest">
+
+Run the unit test functions in this script.
+
+"B<-T all>" will run all of the functions that begin with "test".
+
+"B<-T list>" will list all of the test functions.
+
+Otherwise, "B<pTest>" should match the test function names separated
+with spaces (between quotes).
+
+For more help, see template.sh
+
+=back
+
+=for comment =head1 RETURN VALUE
+
+=for comment =head1 ERRORS
+
+=for comment =head1 EXAMPLES
+
+=for comment =head1 ENVIRONMENT
+
+=head1 SEE ALSO
+
+shunit2.1
+bash-com.inc
+
+=for comment =head1 NOTES
+
+=for comment =head1 CAVEATS
+
+=head1 DIAGNOSTICS
+
+To verify the script is internally OK, run: doc-fmt -T all
+
+=for comment =head1 BUGS
+
+=for comment =head1 RESTRICTIONS
+
+=for comment =head1 AUTHOR
+
+=head1 HISTORY
+
+GPLv3 (c) Copyright 2023
+
+$Revision: 1.7 $ $Date: 2024/12/17 05:53:18 $ GMT
+
+=cut
+EOF
+} # fUsage
+
+# --------------------------------
+fCleanUp() {
+    fComCleanUp
+    exit
+} # fCleanUp
+
+# -------------------
+fSetGlobals() {
+    fComSetGlobals
+
+    # Put your globals here
+    gpVerbose=2
+
+    # Define the Required and the Optional progs, space separated
+    fComCheckDeps "pod2text pod2man pod2html pod2usage" "pod2markdown"
+    return
+} # fSetGlobals
+
+# ========================================
+# Tests
+
+# --------------------------------
+oneTimeSetUp() {
+    # When calling $cName, unset gpTest to prevent infinite loop
+    gpTest=''
+
+    return 0
+} # oneTimeSetUp
+
+# --------------------------------
+oneTimeTearDown() {
+    return 0
+} # oneTearDown
+
+# --------------------------------
+setUp() {
+    return 0
+} # setUp
+
+# --------------------------------
+tearDown() {
+    return 0
+} # tearDown
+
+# --------------------------------
+testUsage() {
+    local tResult
+
+    #-----
+    tResult=$(./$cName -H short 2>&1)
+    assertContains "$LINENO" "$tResult" "NAME $cName"
+
+    #-----
+    tResult=$(./$cName -z 2>&1)
+    assertContains "$LINENO" "$tResult" "NAME $cName"
+    assertContains "$LINENO" "$tResult" "crit"
+
+    #-----
+    tResult=$(./$cName -h 2>&1)
+    assertContains "$LINENO" "$tResult" "DESCRIPTION"
+    assertContains "$LINENO" "$tResult" "HISTORY"
+
+    #-----
+    tResult=$(./$cName -H man 2>&1)
+    assertContains "$LINENO" "$tResult" '.IX Header "DESCRIPTION"'
+    assertContains "$LINENO" "$tResult" '.IX Header "HISTORY"'
+
+    #-----
+    tResult=$(./$cName -H html 2>&1)
+    assertContains "$LINENO" "$tResult" '<li><a href="#DESCRIPTION">DESCRIPTION</a></li>'
+    assertContains "$LINENO" "$tResult" '<h1 id="HISTORY">HISTORY</h1>'
+    assertContains "$LINENO" "$tResult" "<title>$cName Usage</title>"
+
+    #-----
+    tResult=$(./$cName -H md 2>&1)
+    assertContains "$LINENO" "$tResult" '# DESCRIPTION'
+    assertContains "$LINENO" "$tResult" '# HISTORY'
+
+    #-----
+    tResult=$(./$cName 2>&1)
+    assertContains "$LINENO" "$tResult" "Usage:"
+    assertContains "$LINENO" "$tResult" "$cName"
+
+    #-----
+    return 0
+} # testUsage
+
+# --------------------------------
+testScript() {
+    local tResult
+
+    tResult=$(fSetGlobals 2>&1)
+    assertTrue "$LINENO" "[ $? -eq 0 ]"
+
+    tResult=$(./$cName $cName 2>&1)
+    assertTrue "$LINENO" "[ -f doc/$cName.man ]"
+    assertTrue "$LINENO" "[ -f doc/$cName.txt ]"
+    assertTrue "$LINENO" "[ -f doc/$cName.html ]"
+    assertTrue "$LINENO" "[ -f doc/$cName.md ]"
+
+    return 0
+} # testScript
+
+# -------------------
+# This should be the last defined function
+fRunTests() {
+    if [ "$gpTest" = "list" ]; then
+        grep 'test.*()' $cBin/$cName | grep -v grep | sed 's/()//g'
+        exit $?
+    fi
+    SHUNIT_COLOR=auto
+    # SHUNIT_COLOR=always
+    # SHUNIT_COLOR=none
+    if [ "$gpTest" = "all" ]; then
+        gpTest=""
+        # shellcheck disable=SC1091
+        . /usr/local/bin/shunit2.1
+        exit $?
+    fi
+    # shellcheck disable=SC1091
+    . /usr/local/bin/shunit2.1 -- $gpTest
+    exit $?
+} # fRunTests
+
+# ========================================
+# Main
+
+# -------------------
+# Include common bash functions at $cBin/bash-com.inc But first we
+# need to set cBin
+
+# -------------------
+# Set current directory location in PWD and cCurDir, because with cron
+# jobs PWD is not set.
+if [ -z "$PWD" ]; then
+    PWD=$(pwd)
+fi
+cCurDir=$PWD
+
+# -------------------
+# Define cBin, location of common scripts (pick one)
+tBin=home
+case $tBin in
+    current)
+        cBin=$PWD
+        ;;
+    home) cBin=~/bin ;;
+    local) cBin=/usr/local/bin ;;
+    system) cBin=/usr/bin ;;
+    this)
+        cBin=${0%/*}
+        if [ "$cBin" = "." ]; then
+            cBin=$PWD
+        fi
+        cd $cBin
+        cBin=$PWD
+        cd $cCurDir
+        ;;
+esac
+
+. $cBin/bash-com.inc
+
+# -------------------
+# Configuration Section
+
+# shellcheck disable=SC2016
+cVer='$Revision: 1.7 $'
+fSetGlobals
+
+# -------------------
+# Get Args Section
+if [ $# -eq 0 ]; then
+    fError2 -m "Missing options." -l $LINENO
+fi
+while getopts :hH:T: tArg; do
+    case $tArg in
+        # Script arguments
+        # Common arguments
+        h)
+            fUsage long
+            exit 1
+            ;;
+        H)
+            fUsage "$OPTARG"
+            exit 1
+            ;;
+        T) gpTest="$OPTARG" ;;
+        # Problem arguments
+        :) fError -m "Value required for option: -$OPTARG" -l $LINENO ;;
+        \?) fError -m "Unknown option: $OPTARG" -l $LINENO ;;
+    esac
+done
+((--OPTIND))
+shift $OPTIND
+if [ $# -ne 0 ]; then
+    gpFileList="$*"
+fi
+while [ $# -ne 0 ]; do
+    shift
+done
+
+# -------------------
+if [ -n "$gpTest" ]; then
+    fRunTests
+fi
+
+# -------------------
+# Validate
+
+if [ ! -d doc ]; then
+    fError2 -m "Missing doc/" -l $LINENO
+fi
+
+for i in $gpFileList; do
+    if [ ! -x $i ]; then
+        fError2 -m "Could not find \"$i\" or it is not executable" -l $LINENO
+    fi
+done
+
+# -------------------
+# Output section
+
+for i in $gpFileList; do
+    if [ $i -ot doc/$i.txt ]; then
+        fLog2 -p notice -m "\"$i\" docs are up-to-date" -l $LINENO
+        continue
+    fi
+
+    tGen=0
+
+    if grep -q '^=pod$' $i; then
+        fLog2 -p notice -m "Generating docs for \"$i\"" -l $LINENO
+        awk '/=pod/,/=cut/ {print $0}' <$i | pod2text >doc/$i.txt
+        awk '/=pod/,/=cut/ {print $0}' <$i | pod2html --title="$i" >doc/$i.html
+        awk '/=pod/,/=cut/ {print $0}' <$i | pod2markdown >doc/$i.md
+        awk '/=pod/,/=cut/ {print $0}' <$i | pod2man >doc/$i.man
+        tGen=1
+    fi
+
+    if grep -q '^=internal-pod$' $i; then
+        fLog2 -p notice -m "Generating internal docs for \"$i\"" -l $LINENO
+        ./$i -H int >doc/$i.int.txt
+        ./$i -H int-html >doc/$i.int.html
+        ./$i -H int-md >doc/$i.int.md
+        tGen=1
+    fi
+
+    if [ $tGen -eq 0 ]; then
+        if grep -q ' getopts .*h' $i; then
+            fLog2 -p notice -m "Generating \"$i.txt\"" -l $LINENO
+            ./$i -h >doc/$i.txt
+            tGen=1
+        fi
+    fi
+
+    if [ $tGen -eq 0 ]; then
+        fLog2 -p warn -m "No docs for \"$i\"" -l $LINENO
+    fi
+done
+
+# -------------------
+# CleanUp Section
+
+fCleanUp

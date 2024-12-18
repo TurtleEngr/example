@@ -1,0 +1,93 @@
+------------------------------
+Before Rename
+
+"tmp-folder-for-testing"
+|"L1 One"/
+|   |"L2  (name)"/
+|   |	|"L3h(lf)%jsi.foo"/
+|   |	|   |"L4 sjkl46j*^JH^H("/
+|   |   |"L3 sfasda%^&FufgnSDF$#HRTH$T%"
+|   |"L2@,weird& - name"/
+|   |   |"L3h(lf)%jsi.foo"/
+|   |	|   |"L4 sjkl46j*^JH^H("/
+|   |   |"L3 sfasda%^&FufgnSDF$#HRTH$T%"
+|   |"-L2 a"lkj"569}{l"/</j"
+|   |"%*FYE $d ..L2 dg"
+|   |"L2 @#$%%$^H'DF'DE$%^"
+|   |"L2 @#,$T%UG&.we"
+|"L1 three"/
+|   |"L2  (name)"/
+|   |	|"L3h(lf)%jsi.foo"/
+|   |	|   |"L4 sjkl46j*^JH^H("/
+|   |   |"L3 sfasda%^&FufgnSDF$#HRTH$T%"
+|   |"L2@,weird& - name"/
+|   |   |"L3h(lf)%jsi.foo"/
+|   |	|   |"L4 sjkl46j*^JH^H("/
+|   |   |"L3 sfasda%^&FufgnSDF$#HRTH$T%"
+|   |"-L2 a"lkj"569}{l"/</j"
+|   |"%*FYE $d ..L2 dg"
+|   |"L2 @#$%%$^H'DF'DE$%^"
+|   |"L2 @#,$T%UG&.we"
+|"L1 Two"/
+|   |"L2  (name)"/
+|   |	|"L3h(lf)%jsi.foo"/
+|   |	|   |"L4 sjkl46j*^JH^H("/
+|   |   |"L3 sfasda%^&FufgnSDF$#HRTH$T%"
+|   |"L2@,weird& - name"/
+|   |   |"L3h(lf)%jsi.foo"/
+|   |	|   |"L4 sjkl46j*^JH^H("/
+|   |   |"L3 sfasda%^&FufgnSDF$#HRTH$T%"
+|   |"-L2 a"lkj"569}{l"/</j"
+|   |"%*FYE $d ..L2 dg"
+|   |"L2 @#$%%$^H'DF'DE$%^"
+|   |"L2 @#,$T%UG&.we"
+|"L1^bar"
+|"L1:foo"
+
+------------------------------
+After Rename
+
+'tmp-folder-for-testing':
+'tmp-folder-for-testing',
+
+'L1_One':
+'L1 One',
+
+'L2_name':
+'L2  (name)',
+
+'L3h_lf_jsi.foo':
+'L3h(lf)%jsi.foo',
+
+'L4_sjkl46j_JH_H':
+'L4 sjkl46j*^JH^H(',
+
+'L3_sfasda_FufgnSDF_HRTH_T':
+'L3 sfasda%^&FufgnSDF$#HRTH$T%',
+
+'L2_weird-name':
+'L2@,weird& - name',
+
+'L2_a_lkj_569_l_j':
+'-L2 a"lkj"569}{l"/</j',
+
+'FYE_d.L2_dg':
+'%*FYE $d ..L2 dg',
+
+'L2_H_DF_DE':
+'L2 @#$%$^H'DF'DE$%^',
+
+'L2_T_UG.we':
+'L2 @#,$T%UG&.we',
+
+'L1_three':
+'L1 three',
+
+'L1_Two':
+'L1 Two',
+
+'L1_bar':
+'L1^bar',
+
+'L1_foo':
+'L1:foo'
