@@ -1,6 +1,7 @@
 * Photographic Evidence is Dead - Examples
 
 + [[https://slowengineering.wordpress.com/2024/12/17/photographic-evidence-is-dead/][Photographic Evidence is Dead]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-17)
+<<<<<<< HEAD
 + Photographic Evidence is Dead - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (TBD)
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
@@ -10,6 +11,8 @@
 + [[https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/gpg-sign-test.sh][bin/doc/gpg-sign-test.sh]]
 + https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/doc/just-words.pl.md bin/doc/just-words.pl
 + https://github.com/TurtleEngr/example/tree/photographic-evidence-is-dead/bin/doc bin/doc/ - all formats
+=======
+>>>>>>> cf4a82cddcf21ed506d0fe4ad7d371cd9c18d55a
 
 *** Scripts
 + [[https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/gpg-sign.sh][bin/gpg-sign.sh]]
