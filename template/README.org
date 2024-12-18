@@ -2,7 +2,9 @@
 - Sample README for branches. Copy this to top README.org on the branch.
 
 + Article link - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (YYYY-MM-DD)
-+ Article link - [[https://medium.com/][Medium article]] (YYYY-MM-DD)
++ Article link - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (YYYY-MM-DD)
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
 ** TOC
+
+** Related Links
