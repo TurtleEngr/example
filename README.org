@@ -1,7 +1,7 @@
 * Photographic Evidence is Dead - Examples
 
 + [[https://slowengineering.wordpress.com/2024/12/17/photographic-evidence-is-dead/][Photographic Evidence is Dead]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-17)
-+ Photographic Evidence is Dead - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (TBD)
++ [[https://medium.com/slow-engineering/photographic-evidence-is-dead-e9b495aca7b0][Photographic Evidence is Dead]] - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (TBD)
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
 ** TOC
@@ -23,6 +23,7 @@
 + [[http://www.openpgp.org/][OpenPGP]]
 + [[https://web.archive.org/web/20240904234347/https://en.wikipedia.org/wiki/Web_of_trust][Web of Trust]]
 + [[https://github.com/kward/shunit2][shunit2]]
+
 + [[https://en.wikipedia.org/wiki/Fediverse][Fediverse]]
 + [[https://en.wikipedia.org/wiki/ActivityPub][ActivityPub]]
 + [[https://en.wikipedia.org/wiki/Ghost_(blogging_platform)][Ghost]]
