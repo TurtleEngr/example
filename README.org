@@ -1,7 +1,31 @@
 * Photographic Evidence is Dead - Examples
 
-- TBD - work in progress
-
-+ Article link
-
++ [[https://slowengineering.wordpress.com/2024/12/17/photographic-evidence-is-dead/][Photographic Evidence is Dead]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-17)
++ Photographic Evidence is Dead - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (TBD)
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
+
+** TOC
+*** Manuals
++ https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/doc/gpg-sign.sh.md bin/doc/gpg-sign.sh
++ [[https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/gpg-sign-test.sh][bin/doc/gpg-sign-test.sh]]
++ https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/doc/just-words.pl.md bin/doc/just-words.pl
++ https://github.com/TurtleEngr/example/tree/photographic-evidence-is-dead/bin/doc bin/doc/ - all formats
+
+*** Scripts
++ [[https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/gpg-sign.sh][bin/gpg-sign.sh]]
++ [[https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/gpg-sign-test.sh][bin/gpg-sign-test.sh]] - test gpg-sign.sh
++ [[https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/bin/just-words.pl][bin/just-words.pl]]
++ [[https://github.com/TurtleEngr/example/blob/photographic-evidence-is-dead/bin/bin/shunit2.1][bin/shunit2.1]] - needed for test scripts
++ [[https://github.com/TurtleEngr/example/tree/photographic-evidence-is-dead/bin][bin/]] - all scripts
+
+** Related Links
++ [[http://www.gnupg.org/][GNUPG]]
++ [[http://www.openpgp.org/][OpenPGP]]
++ [[https://web.archive.org/web/20240904234347/https://en.wikipedia.org/wiki/Web_of_trust][Web of Trust]]
++ [[https://github.com/kward/shunit2][shunit2]]
++ [[https://en.wikipedia.org/wiki/Fediverse][Fediverse]]
++ [[https://en.wikipedia.org/wiki/ActivityPub][ActivityPub]]
++ [[https://en.wikipedia.org/wiki/Ghost_(blogging_platform)][Ghost]]
++ [[https://en.wikipedia.org/wiki/Mastodon_(social_network)][Mastodon]]
++ [[https://matrix.org/][Matrix.org]]
++ [[https://en.wikipedia.org/wiki/PeerTube][PeerTube]]
