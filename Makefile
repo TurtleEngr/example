@@ -26,8 +26,10 @@ save ci : clean
 	git pull origin $(mBranch)
 	git ci -am Updated
 
-publish release push : save
+publish release push : save FORCE
 	git push origin $(mBranch)
+
+FORCE :
 
 # --------------------
 
