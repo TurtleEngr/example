@@ -1,24 +1,29 @@
 #!/bin/bash
-# $Id: sshagent,v 1.91 2024/11/22 20:14:51 bruce Exp $
+# $Id: sshagent,v 1.94 2025/01/10 01:52:30 bruce Exp $
 #set -u
 
+# My usual prefix code are not used because the "unset" cmds at the
+# end of this sourced script could undefine functions in calling
+# scripts.
+
 # Var prefix key
-#    cgVar - global constant
-#    gVar  - global var
-#    gpVar - global parameter. Usually a CLI option, or predefined
+#    caVar - global constant
+#    gaVar  - global var
+#    gpaVar - global parameter. Usually a CLI option, or predefined
 #    pVar  - a function parameter (local)
 #    tVar  - a local variable
+#    faFun - function
 
 # Globals that will be unset at end
-export cgBin=""
-export cgEnvDir=""
-export cgHomeDir=""
-export cgProgList=""
-export cgScriptName=""
-export gpAction=""
+export caBin=""
+export caEnvDir=""
+export caHomeDir=""
+export caProgList=""
+export caScriptName=""
+export gpaAction=""
 export gErr=0
 export gSARunning=""
-export gpParm=""
+export gpaParm=""
 
 # Globals that will not be unset at end
 export cgAgentOwner
@@ -26,7 +31,7 @@ export gpDebug=${gpDebug:-0}
 export cgEnvFile
 
 # --------------------
-fUsage() {
+faUsage() {
     local pStyle=$1
     local tProg=""
 
@@ -39,10 +44,7 @@ fUsage() {
             tProg=pod2text
             ;;
         html)
-            tProg="pod2html --title=$cName"
-            ;;
-        html)
-            tProg=pod2html
+            tProg="pod2html --title=$caScriptName"
             ;;
         md)
             tProg=pod2markdown
@@ -59,10 +61,10 @@ fUsage() {
     if ! which ${tProg%% *} >/dev/null; then
         tProg=pod2text
     fi
-    cat $cgBin/$cgScriptName | $tProg | less
+    cat $caBin/$caScriptName | $tProg | less
     return 1
 
-    cat <<'EOF' &>/dev/null
+    cat <<EOF &>/dev/null
 =pod
 
 =head1 NAME
@@ -151,44 +153,44 @@ error.
 
 =head2 Env and option Errors
 
-    Error: sshagent is not 'sourced' [LINENO]
-    Error: No options were found [LINENO]"
-    Error: Unknown option: OPTARG [LINENO]
-    Error: Missing USER env. var. [LINENO]
-    Error: Missing HOME env. var. [LINENO]
-    Error: Missing program: PROG [LINENO]
+    SA-Error: sshagent is not 'sourced' [LINENO]
+    SA-Error: No options were found [LINENO]"
+    SA-Error: Unknown option: OPTARG [LINENO]
+    SA-Error: Missing USER env. var. [LINENO]
+    SA-Error: Missing HOME env. var. [LINENO]
+    SA-Error: Missing program: PROG [LINENO]
 
 =head2 Directory Errors
 
-    Error: HOME dir is not writable [LINENO]
+    SA-Error: HOME dir is not writable [LINENO]
 
 This could be caused by cgAgentOwner being set to an unknown user.
 
-    Error: $cgEnvDir is not writable or is missing [LINENO]
+    SA-Error: $caEnvDir is not writable or is missing [LINENO]
 
 This could be caused by cgAgentOwner being set to a user that has no
 ~/.ssh/ dir.
 
-    Error: with chown [LINENO]"
-    Error: with chmod [LINENO]"
+    SA-Error: with chown [LINENO]"
+    SA-Error: with chmod [LINENO]"
 
-The attempt to change the owner and permissions on the cgEnvDir
+The attempt to change the owner and permissions on the caEnvDir
 failed. The dir and files should ONLY have "user" read/write
 permissions.
 
-    Error: Not found: KEY [LINENO]"
+    SA-Error: Not found: KEY [LINENO]"
 
 A KEY was not found, even after prepending with "$HOME/.ssh/"
 
 =head2 -s Errors
 
-    Error: agent is not running [LINENO]"
-    Error: not found: $cgEnvFile [LINENO]"
+    SA-Error: agent is not running [LINENO]"
+    SA-Error: not found: $cgEnvFile [LINENO]"
 
 =head2 Key add errors or warnings
 
-    Error: cgAgentOwner override cannot be used to add keys [LINENO]
-    Warning: KEY has no password!!! [LINENO]"
+    SA-Error: cgAgentOwner override cannot be used to add keys [LINENO]
+    SA-Warning: KEY has no password!!! [LINENO]"
 
 =head1 EXAMPLES
 
@@ -362,15 +364,15 @@ TurtleEngr
 
 =head1 HISTORY
 
-$Revision: 1.91 $
+$Revision: 1.94 $
 
 =cut
 
 EOF
-} # fUsage
+} # faUsage
 
 # --------------------
-fSetBin() {
+faSetBin() {
     local tBinLoc=home
     local tBin=$PWD
 
@@ -393,92 +395,92 @@ fSetBin() {
     esac
 
     echo "$tBin"
-} # fSetBin
+} # faSetBin
 
 # --------------------
-fConfig() {
+faConfig() {
     if [ "$USER" = "root" ]; then
         if [ -z "$cgAgentOwner" ] && [ -n "$SUDO_USER" ]; then
             cgAgentOwner=$SUDO_USER
-            echo "Notice: cgAgentOwner=$SUDO_USER"
+            echo "SA-Notice: cgAgentOwner=$SUDO_USER"
         fi
         # Hard coded. So this could fail if this is not the home dir
         # for users. The could be fixed by looking up the user's home
         # dir in /etc/passwd
-        cgHomeDir='/home'
+        caHomeDir='/home'
     else
         # This fails if home is /root
-        cgHomeDir=${HOME%/*}
+        caHomeDir=${HOME%/*}
     fi
     cgAgentOwner=${cgAgentOwner:-$USER}
 
-    cgScriptName=sshagent
-    cgBin=$(fSetBin)
-    cgEnvDir=$cgHomeDir/$cgAgentOwner/.ssh
-    cgEnvFile=${cgEnvFile:-$cgEnvDir/.sshagent.env}
-    cgProgList='ssh-agent ssh-add pod2text pod2usage'
+    caScriptName=sshagent
+    caBin=$(faSetBin)
+    caEnvDir=$caHomeDir/$cgAgentOwner/.ssh
+    cgEnvFile=${cgEnvFile:-$caEnvDir/.sshagent.env}
+    caProgList='ssh-agent ssh-add pod2text pod2usage'
     gErr=0
 
-    gpAction=""
-    gpParm=""
+    gpaAction=""
+    gpaParm=""
     gpDebug=${gpDebug:-0}
-    gDebug=$gpDebug
-} # fConfig
+    gaDebug=$gpDebug
+} # faConfig
 
 # --------------------
-fGetOpts() {
+faGetOpts() {
     if [ $gErr -ne 0 ]; then
         return 1
     fi
     local tArg
 
     OPTIND=1
-    if [ $gDebug -ne 0 ]; then echo 1NumArgs: "$#" OPTIND: $OPTIND; fi
-    if [ $gDebug -ne 0 ]; then echo 1ArgsAs: "$*" OPTIND: $OPTIND; fi
-    if [ $gDebug -ne 0 ]; then echo 1ArgsAt: "$@" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 1NumArgs: "$#" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 1ArgsAs: "$*" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 1ArgsAt: "$@" OPTIND: $OPTIND; fi
     while getopts :hH:ksx tArg; do
         case $tArg in
             h)
-                fUsage long
+                faUsage long
                 return 1
                 ;;
             H)
-                fUsage $OPTARG
+                faUsage $OPTARG
                 return 1
                 ;;
-            k) gpAction='kill' ;;
-            s) gpAction='script' ;;
-            x) ((++gDebug)) ;;
+            k) gpaAction='kill' ;;
+            s) gpaAction='script' ;;
+            x) ((++gaDebug)) ;;
             \?)
-                echo "Error: Unknown option: -$OPTARG [$LINENO]"
-                fUsage short
+                echo "SA-Error: Unknown option: -$OPTARG [$LINENO]"
+                faUsage short
                 return 1
                 ;;
             :)
-                echo "Error: Value required for option: $tArg [$LINENO]"
-                fUsage short
+                echo "SA-Error: Value required for option: $tArg [$LINENO]"
+                faUsage short
                 return 1
                 ;;
         esac
     done
-    if [ $gDebug -ne 0 ]; then echo 2NumArgs: "$#" OPTIND: $OPTIND; fi
-    if [ $gDebug -ne 0 ]; then echo 2ArgsAs: "$*" OPTIND: $OPTIND; fi
-    if [ $gDebug -ne 0 ]; then echo 2ArgsAt: "$@" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 2NumArgs: "$#" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 2ArgsAs: "$*" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 2ArgsAt: "$@" OPTIND: $OPTIND; fi
     ((--OPTIND))
     shift $OPTIND
-    if [ $gDebug -ne 0 ]; then echo 3NumArgs: "$#" OPTIND: $OPTIND; fi
-    if [ $gDebug -ne 0 ]; then echo 3ArgsAs: "$*" OPTIND: $OPTIND; fi
-    if [ $gDebug -ne 0 ]; then echo 3ArgsAt: "$@" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 3NumArgs: "$#" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 3ArgsAs: "$*" OPTIND: $OPTIND; fi
+    if [ $gaDebug -ne 0 ]; then echo 3ArgsAt: "$@" OPTIND: $OPTIND; fi
     if [ $# -ne 0 ]; then
-        gpParm="$*"
-        gpAction='add'
+        gpaParm="$*"
+        gpaAction='add'
     fi
-    if [ $gDebug -ne 0 ]; then echo "gpParam=$gpParm"; fi
+    if [ $gaDebug -ne 0 ]; then echo "gpaParam=$gpaParm"; fi
     return 0
-} # fGetOpts
+} # faGetOpts
 
 # --------------------
-fValidate() {
+faValidate() {
     if [ $gErr -ne 0 ]; then
         return 1
     fi
@@ -488,99 +490,99 @@ fValidate() {
 
     if [ -z "$USER" ]; then
         gErr=$LINENO
-        echo "Error: Missing USER env. var. [$gErr]"
-        fUsage short
+        echo "SA-Error: Missing USER env. var. [$gErr]"
+        faUsage short
         return 1
     fi
 
     if [ -z "$HOME" ]; then
         gErr=$LINENO
-        echo "Error: Missing HOME env. var. [$gErr]"
-        fUsage short
+        echo "SA-Error: Missing HOME env. var. [$gErr]"
+        faUsage short
         return 1
     fi
 
     if [ ! -w $HOME ]; then
         gErr=$LINENO
-        echo "Error: $HOME dir is not writable [$gErr]"
-        fUsage short
+        echo "SA-Error: $HOME dir is not writable [$gErr]"
+        faUsage short
         return 1
     fi
 
-    if [ ! -w $cgEnvDir ]; then
+    if [ ! -w $caEnvDir ]; then
         gErr=$LINENO
-        echo "Error: $cgEnvDir is not writable or is missing [$gErr]"
-        fUsage short
+        echo "SA-Error: $caEnvDir is not writable or is missing [$gErr]"
+        faUsage short
         return 1
     fi
 
-    if [ -z "$gpAction" ]; then
+    if [ -z "$gpaAction" ]; then
         gErr=$LINENO
-        echo "Error: No options were found [$gErr]"
-        fUsage short
+        echo "SA-Error: No options were found [$gErr]"
+        faUsage short
         return 1
     fi
 
-    for tProg in $cgProgList; do
+    for tProg in $caProgList; do
         if ! which $tProg &>/dev/null; then
             gErr=$LINENO
-            echo "Error: Missing program: $tProg [$gErr]"
-            fUsage short
+            echo "SA-Error: Missing program: $tProg [$gErr]"
+            faUsage short
             return 1
         fi
     done
 
     if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
         gErr=$LINENO
-        echo "Error: $cgScriptName is not 'sourced' [$gErr]"
-        fUsage short
+        echo "SA-Error: $caScriptName is not 'sourced' [$gErr]"
+        faUsage short
         return 1
     fi
 
     # Keep the permissions low
-    if ! chown -R $cgAgentOwner $cgEnvDir; then
+    if ! chown -R $cgAgentOwner $caEnvDir; then
         gErr=$LINENO
-        echo "Error: with chown [$gErr]"
-        fUsage short
+        echo "SA-Error: with chown [$gErr]"
+        faUsage short
         return 1
     fi
 
-    find $cgEnvDir -type d -exec chmod u=rwx,go= {} \;
+    find $caEnvDir -type d -exec chmod u=rwx,go= {} \;
     if [ $? -ne 0 ]; then
         gErr=$LINENO
-        echo "Error: with chmod [$gErr]"
-        fUsage short
+        echo "SA-Error: with chmod [$gErr]"
+        faUsage short
         return 1
     fi
 
-    find $cgEnvDir -type f -exec chmod u+rw,go= {} \;
+    find $caEnvDir -type f -exec chmod u+rw,go= {} \;
     if [ $? -ne 0 ]; then
         gErr=$LINENO
-        echo "Error: with chmod [$gErr]"
-        fUsage short
+        echo "SA-Error: with chmod [$gErr]"
+        faUsage short
         return 1
     fi
 
-    for tParm in $gpParm; do
+    for tParm in $gpaParm; do
         if [ ! -r $tParm ]; then
             if [ -r ~/.ssh/$tParm ]; then
                 tParm=~/.ssh/$tParm
             else
                 gErr=$LINENO
-                echo "Error: Not found: $tParm [$gErr]"
+                echo "SA-Error: Not found: $tParm [$gErr]"
                 return 1
             fi
         fi
         ssh-keygen -y -f $tParm -P 'xxx' &>/dev/null 2>&1
         if [ $? -eq 0 ]; then
-            echo "Warning: $tParm has no password!!! [$LINENO]"
+            echo "SA-Warning: $tParm has no password!!! [$LINENO]"
         fi
         tParmList="$tParmList $tParm"
     done
-    gpParm=$tParmList
+    gpaParm=$tParmList
 
     return 0
-} # fValidate
+} # faValidate
 
 # --------------------
 fSARunning() {
@@ -609,37 +611,37 @@ fSARunning() {
 } # fSARunning
 
 # --------------------
-fKill() {
+faKill() {
     if [ $gErr -ne 0 ]; then
         return 1
     fi
 
     # Kill all agents owned by $cgAgentOwner
-    echo "Notice: Killing all of your ssh-agents"
+    echo "SA-Notice: Killing all of your ssh-agents"
     pkill -u $cgAgentOwner ssh-agent &>/dev/null
     rm -f $cgEnvFile &>/dev/null
     unset SSH_AUTH_SOCK SSH_AGENT_PID
 
     return 0
-} # fKill
+} # faKill
 
 # --------------------
-fScript() {
+faScript() {
     if [ $gErr -ne 0 ]; then
         return 1
     fi
 
     if [ $gSARunning -eq 0 ]; then
         gErr=$LINENO
-        echo "Error: agent is not running [$gErr]"
-        fUsage short
+        echo "SA-Error: agent is not running [$gErr]"
+        faUsage short
         return 1
     fi
 
     if [ ! -x $cgEnvFile ]; then
         gErr=$LINENO
-        echo "Error: not found: $cgEnvFile [$gErr]"
-        fUsage short
+        echo "SA-Error: not found: $cgEnvFile [$gErr]"
+        faUsage short
         return 1
     fi
 
@@ -647,48 +649,48 @@ fScript() {
     ssh-add -l
 
     return 0
-} # fScript
+} # faScript
 
-fAdd() {
+faAdd() {
     if [ $gErr -ne 0 ]; then
         return 1
     fi
 
     if [ "$cgAgentOwner" != "$USER" ]; then
         gErr=$LINENO
-        echo "Error: cgAgentOwner override cannot be used to add keys [$gErr]"
-        fUsage short
+        echo "SA-Error: cgAgentOwner override cannot be used to add keys [$gErr]"
+        faUsage short
         return 1
     fi
 
     if [ $gSARunning -eq 0 ]; then
-        echo "Notice: Starting a new ssh-agent"
+        echo "SA-Notice: Starting a new ssh-agent"
         ssh-agent >$cgEnvFile
         chmod u+rwx,o= $cgEnvFile
         . $cgEnvFile &>/dev/null
         gSARunning=1
     fi
 
-    ssh-add $gpParm
+    ssh-add $gpaParm
     ssh-add -l
     return 0
-} # fAdd
+} # faAdd
 
 # --------------------
-fAction() {
+faAction() {
     if [ $gErr -ne 0 ]; then
         return 1
     fi
 
-    case $gpAction in
+    case $gpaAction in
         kill)
-            fKill
+            faKill
             ;;
         script)
-            fScript
+            faScript
             ;;
         add)
-            fAdd
+            faAdd
             ;;
     esac
 
@@ -696,24 +698,24 @@ fAction() {
         return 1
     fi
     return 0
-} # fAction
+} # faAction
 
 # ========================================
 # Main
 
-fConfig
+faConfig
 
-if [ $gDebug -ne 0 ]; then echo NumArgs: "$#"; fi
+if [ $gaDebug -ne 0 ]; then echo NumArgs: "$#"; fi
 
 # shellcheck disable=SC2048
-fGetOpts $*
+faGetOpts $*
 
-fValidate
+faValidate
 fSARunning
-fAction
+faAction
 
 set +u
-unset cgBin cgEnvDir cgHomeDir cgProgList cgScriptName gDebug gErr
-unset gSARunning gpAction gpParm
-unset -f fAction fAdd fConfig fGetOpts fKill fSARunning fScript
-unset -f fSetBin fValidate fUsage
+unset caBin caEnvDir caHomeDir caProgList caScriptName gaDebug
+unset gSARunning gpaAction gpaParm
+unset -f faAction faAdd faConfig faGetOpts faKill fSARunning faScript
+unset -f faSetBin faValidate faUsage

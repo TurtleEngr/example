@@ -34,6 +34,12 @@ publish release push : save
 update-from-bin : $(mBinList)
 	cd bin; doc-fmt $$(find * -prune -type f -executable)
 
+force-update :
+	for i in $(mBinList); do \
+		cp -a ~/bin/$$(basename $$i) $$i; \
+	done
+	cd bin; doc-fmt $$(find * -prune -type f -executable)
+
 # --------------------
 # Rules
 
@@ -41,4 +47,4 @@ update-from-bin : $(mBinList)
 	org2html.sh $< $@
 
 bin/% : ~/bin/%
-	cp $< $@
+	cp -a $< $@
