@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "STDIN 1"
-.TH STDIN 1 "2025-01-11" "perl v5.32.1" "User Contributed Perl Documentation"
+.TH STDIN 1 "2025-01-21" "perl v5.32.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -212,53 +212,53 @@ error.
 .SS "Env and option Errors"
 .IX Subsection "Env and option Errors"
 .Vb 6
-\&    Error: sshagent is not \*(Aqsourced\*(Aq [LINENO]
-\&    Error: No options were found [LINENO]"
-\&    Error: Unknown option: OPTARG [LINENO]
-\&    Error: Missing USER env. var. [LINENO]
-\&    Error: Missing HOME env. var. [LINENO]
-\&    Error: Missing program: PROG [LINENO]
+\&    SA\-Error: sshagent is not \*(Aqsourced\*(Aq [LINENO]
+\&    SA\-Error: No options were found [LINENO]"
+\&    SA\-Error: Unknown option: OPTARG [LINENO]
+\&    SA\-Error: Missing USER env. var. [LINENO]
+\&    SA\-Error: Missing HOME env. var. [LINENO]
+\&    SA\-Error: Missing program: PROG [LINENO]
 .Ve
 .SS "Directory Errors"
 .IX Subsection "Directory Errors"
 .Vb 1
-\&    Error: HOME dir is not writable [LINENO]
+\&    SA\-Error: HOME dir is not writable [LINENO]
 .Ve
 .PP
 This could be caused by cgAgentOwner being set to an unknown user.
 .PP
 .Vb 1
-\&    Error: $cgEnvDir is not writable or is missing [LINENO]
+\&    SA\-Error: $caEnvDir is not writable or is missing [LINENO]
 .Ve
 .PP
 This could be caused by cgAgentOwner being set to a user that has no
 ~/.ssh/ dir.
 .PP
 .Vb 2
-\&    Error: with chown [LINENO]"
-\&    Error: with chmod [LINENO]"
+\&    SA\-Error: with chown [LINENO]"
+\&    SA\-Error: with chmod [LINENO]"
 .Ve
 .PP
-The attempt to change the owner and permissions on the cgEnvDir
+The attempt to change the owner and permissions on the caEnvDir
 failed. The dir and files should \s-1ONLY\s0 have \*(L"user\*(R" read/write
 permissions.
 .PP
 .Vb 1
-\&    Error: Not found: KEY [LINENO]"
+\&    SA\-Error: Not found: KEY [LINENO]"
 .Ve
 .PP
 A \s-1KEY\s0 was not found, even after prepending with \*(L"$HOME/.ssh/\*(R"
 .SS "\-s Errors"
 .IX Subsection "-s Errors"
 .Vb 2
-\&    Error: agent is not running [LINENO]"
-\&    Error: not found: $cgEnvFile [LINENO]"
+\&    SA\-Error: agent is not running [LINENO]"
+\&    SA\-Error: not found: $cgEnvFile [LINENO]"
 .Ve
 .SS "Key add errors or warnings"
 .IX Subsection "Key add errors or warnings"
 .Vb 2
-\&    Error: cgAgentOwner override cannot be used to add keys [LINENO]
-\&    Warning: KEY has no password!!! [LINENO]"
+\&    SA\-Error: cgAgentOwner override cannot be used to add keys [LINENO]
+\&    SA\-Warning: KEY has no password!!! [LINENO]"
 .Ve
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"
@@ -403,4 +403,4 @@ sshagent only works well with bash.
 TurtleEngr
 .SH "HISTORY"
 .IX Header "HISTORY"
-\&\f(CW$Revision:\fR 1.91 $
+\&\f(CW$Revision:\fR 1.94 $

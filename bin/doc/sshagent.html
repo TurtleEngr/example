@@ -117,41 +117,41 @@
 
 <h2 id="Env-and-option-Errors">Env and option Errors</h2>
 
-<pre><code>    Error: sshagent is not &#39;sourced&#39; [LINENO]
-    Error: No options were found [LINENO]&quot;
-    Error: Unknown option: OPTARG [LINENO]
-    Error: Missing USER env. var. [LINENO]
-    Error: Missing HOME env. var. [LINENO]
-    Error: Missing program: PROG [LINENO]</code></pre>
+<pre><code>    SA-Error: sshagent is not &#39;sourced&#39; [LINENO]
+    SA-Error: No options were found [LINENO]&quot;
+    SA-Error: Unknown option: OPTARG [LINENO]
+    SA-Error: Missing USER env. var. [LINENO]
+    SA-Error: Missing HOME env. var. [LINENO]
+    SA-Error: Missing program: PROG [LINENO]</code></pre>
 
 <h2 id="Directory-Errors">Directory Errors</h2>
 
-<pre><code>    Error: HOME dir is not writable [LINENO]</code></pre>
+<pre><code>    SA-Error: HOME dir is not writable [LINENO]</code></pre>
 
 <p>This could be caused by cgAgentOwner being set to an unknown user.</p>
 
-<pre><code>    Error: $cgEnvDir is not writable or is missing [LINENO]</code></pre>
+<pre><code>    SA-Error: $caEnvDir is not writable or is missing [LINENO]</code></pre>
 
 <p>This could be caused by cgAgentOwner being set to a user that has no ~/.ssh/ dir.</p>
 
-<pre><code>    Error: with chown [LINENO]&quot;
-    Error: with chmod [LINENO]&quot;</code></pre>
+<pre><code>    SA-Error: with chown [LINENO]&quot;
+    SA-Error: with chmod [LINENO]&quot;</code></pre>
 
-<p>The attempt to change the owner and permissions on the cgEnvDir failed. The dir and files should ONLY have &quot;user&quot; read/write permissions.</p>
+<p>The attempt to change the owner and permissions on the caEnvDir failed. The dir and files should ONLY have &quot;user&quot; read/write permissions.</p>
 
-<pre><code>    Error: Not found: KEY [LINENO]&quot;</code></pre>
+<pre><code>    SA-Error: Not found: KEY [LINENO]&quot;</code></pre>
 
 <p>A KEY was not found, even after prepending with &quot;$HOME/.ssh/&quot;</p>
 
 <h2 id="s-Errors">-s Errors</h2>
 
-<pre><code>    Error: agent is not running [LINENO]&quot;
-    Error: not found: $cgEnvFile [LINENO]&quot;</code></pre>
+<pre><code>    SA-Error: agent is not running [LINENO]&quot;
+    SA-Error: not found: $cgEnvFile [LINENO]&quot;</code></pre>
 
 <h2 id="Key-add-errors-or-warnings">Key add errors or warnings</h2>
 
-<pre><code>    Error: cgAgentOwner override cannot be used to add keys [LINENO]
-    Warning: KEY has no password!!! [LINENO]&quot;</code></pre>
+<pre><code>    SA-Error: cgAgentOwner override cannot be used to add keys [LINENO]
+    SA-Warning: KEY has no password!!! [LINENO]&quot;</code></pre>
 
 <h1 id="EXAMPLES">EXAMPLES</h1>
 
@@ -273,7 +273,7 @@
 
 <h1 id="HISTORY">HISTORY</h1>
 
-<p>$Revision: 1.91 $</p>
+<p>$Revision: 1.94 $</p>
 
 
 </body>

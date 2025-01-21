@@ -63,40 +63,40 @@ OPTIONS
 
 ERRORS
   Env and option Errors
-        Error: sshagent is not 'sourced' [LINENO]
-        Error: No options were found [LINENO]"
-        Error: Unknown option: OPTARG [LINENO]
-        Error: Missing USER env. var. [LINENO]
-        Error: Missing HOME env. var. [LINENO]
-        Error: Missing program: PROG [LINENO]
+        SA-Error: sshagent is not 'sourced' [LINENO]
+        SA-Error: No options were found [LINENO]"
+        SA-Error: Unknown option: OPTARG [LINENO]
+        SA-Error: Missing USER env. var. [LINENO]
+        SA-Error: Missing HOME env. var. [LINENO]
+        SA-Error: Missing program: PROG [LINENO]
 
   Directory Errors
-        Error: HOME dir is not writable [LINENO]
+        SA-Error: HOME dir is not writable [LINENO]
 
     This could be caused by cgAgentOwner being set to an unknown user.
 
-        Error: $cgEnvDir is not writable or is missing [LINENO]
+        SA-Error: $caEnvDir is not writable or is missing [LINENO]
 
     This could be caused by cgAgentOwner being set to a user that has no
     ~/.ssh/ dir.
 
-        Error: with chown [LINENO]"
-        Error: with chmod [LINENO]"
+        SA-Error: with chown [LINENO]"
+        SA-Error: with chmod [LINENO]"
 
-    The attempt to change the owner and permissions on the cgEnvDir failed.
+    The attempt to change the owner and permissions on the caEnvDir failed.
     The dir and files should ONLY have "user" read/write permissions.
 
-        Error: Not found: KEY [LINENO]"
+        SA-Error: Not found: KEY [LINENO]"
 
     A KEY was not found, even after prepending with "$HOME/.ssh/"
 
   -s Errors
-        Error: agent is not running [LINENO]"
-        Error: not found: $cgEnvFile [LINENO]"
+        SA-Error: agent is not running [LINENO]"
+        SA-Error: not found: $cgEnvFile [LINENO]"
 
   Key add errors or warnings
-        Error: cgAgentOwner override cannot be used to add keys [LINENO]
-        Warning: KEY has no password!!! [LINENO]"
+        SA-Error: cgAgentOwner override cannot be used to add keys [LINENO]
+        SA-Warning: KEY has no password!!! [LINENO]"
 
 EXAMPLES
     For these examples the private keys are located in ~/.ssh/. For better
@@ -220,5 +220,5 @@ AUTHOR
     TurtleEngr
 
 HISTORY
-    $Revision: 1.91 $
+    $Revision: 1.94 $
 
