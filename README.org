@@ -1,7 +1,7 @@
 * Photographic Evidence is Dead - Examples
 
 + [[https://slowengineering.wordpress.com/2024/12/17/photographic-evidence-is-dead/][Photographic Evidence is Dead]] - [[https://slowengineering.wordpress.com/][Slow Engineering - blog]] (2024-12-17)
-+ [[https://medium.com/slow-engineering/photographic-evidence-is-dead-e9b495aca7b0][Photographic Evidence is Dead]] - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (TBD)
++ [[https://medium.com/slow-engineering/photographic-evidence-is-dead-e9b495aca7b0][Photographic Evidence is Dead]] - [[https://medium.com/slow-engineering][Slow Engineering - Medium]] (2024-12-17)
 + [[https://github.com/TurtleEngr/example/blob/develop/README.org][TOC for other articles]]
 
 ** TOC
