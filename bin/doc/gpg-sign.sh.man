@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "STDIN 1"
-.TH STDIN 1 "2024-12-17" "perl v5.26.1" "User Contributed Perl Documentation"
+.TH STDIN 1 "2025-11-19" "perl v5.26.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -146,7 +146,7 @@ Sign or verify a file's signature with gpg keys.
 .IX Header "DESCRIPTION"
 With the \-s or \-c option, sign the \s-1FILE,\s0 with the \-k \s-1KEY,\s0 and output
 signature or signed file to \s-1FILE\s0.sig. The private \s-1KEY\s0 needs to be in
-youru gnupg keychain file.
+your gnupg keychain file.
 .PP
 If no \-s or \-c option, verify \s-1FILE,\s0 with the signature file \s-1FILE\s0.sig.
 The public \s-1KEY\s0 needs to be in your gnupg keychain file.

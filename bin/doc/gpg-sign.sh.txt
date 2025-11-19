@@ -8,7 +8,7 @@ SYNOPSIS
 DESCRIPTION
     With the -s or -c option, sign the FILE, with the -k KEY, and output
     signature or signed file to FILE.sig. The private KEY needs to be in
-    youru gnupg keychain file.
+    your gnupg keychain file.
 
     If no -s or -c option, verify FILE, with the signature file FILE.sig.
     The public KEY needs to be in your gnupg keychain file.
